@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <!-- Modify with the path to your KeePass.exe -->
+    <KeePassPath>..\..\OneDrive\Software\security\keepass\</KeePassPath>
+    <KeePassPluginsPath>$(KeePassPath)Plugins\</KeePassPluginsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="KeePass">
+      <HintPath>$(KeePassPath)KeePass.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

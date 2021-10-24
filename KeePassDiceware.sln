@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "KeePass", "..\..\OneDrive\Software\security\keepass\KeePass.exe", "{894DCF6E-996C-42B6-B68B-55976D989A5F}"
+	ProjectSection(DebuggerProjectSystem) = preProject
+		PortSupplier = 00000000-0000-0000-0000-000000000000
+		Executable = Y:\Users\cmd\OneDrive\Software\security\keepass\KeePass.exe
+		RemoteMachine = OUTRIDER
+		StartingDirectory = Y:\Users\cmd\OneDrive\Software\security\keepass
+		Environment = Default
+		LaunchingEngine = 00000000-0000-0000-0000-000000000000
+		UseLegacyDebugEngines = No
+		LaunchSQLEngine = No
+		AttachLaunchAction = No
+		IORedirection = Auto
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassDiceware", "KeePassDiceware.csproj", "{24E2DCE2-ED0F-4063-998E-9920CC35988F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{894DCF6E-996C-42B6-B68B-55976D989A5F}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{894DCF6E-996C-42B6-B68B-55976D989A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E2DCE2-ED0F-4063-998E-9920CC35988F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E2DCE2-ED0F-4063-998E-9920CC35988F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E2DCE2-ED0F-4063-998E-9920CC35988F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E2DCE2-ED0F-4063-998E-9920CC35988F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA4D31CA-11FD-4A95-A7FE-7F9A85D23EFB}
+	EndGlobalSection
+EndGlobal

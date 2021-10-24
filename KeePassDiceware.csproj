@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="KeePass.props" />
+  <PropertyGroup>
+    <TargetFrameworks>net4.5</TargetFrameworks>
+
+    <!-- *Must* be "KeePass Plugin" -->
+    <Product>KeePass Plugin</Product>
+
+    <ProductName>KeePass Diceware Plugin</ProductName>
+    <Description>A KeePass password generator based on the XKCD Diceware.</Description>
+    <PackageTags>keepass;diceware;plugin</PackageTags>
+
+    <Authors>Chris Marc Dailey (nitz)</Authors>
+    <PackageId>KeePass Diceware</PackageId>
+    <Company>cmd.wtf</Company>
+    <Copyright>Copyright © 2021 cmd</Copyright>
+
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+
+    <PackageLicenseExpression>AGPL-3.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/cmdwtf/KeePassDiceware</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cmdwtf/KeePassDiceware</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Title>$(Product)</Title>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <GenerateResourceUsePreserializedResources>True</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Resources\*.txt" />
+    <EmbeddedResource Include="Resources\*.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(OutDir)$(ProjectName).*&quot; &quot;$(KeePassPluginsPath)&quot;" />
+  </Target>
+</Project>
