@@ -6,9 +6,11 @@ A [KeePass Password Safe](https://keepass.info/) plugin that provides a custom, 
 ## 🌄 Screenshots
 
 ![password generation preview](./.meta/preview-tab.png)
+
 _The Password Generation Preview_
 
 ![options form](./.meta/options-form.png)
+
 _The Options Form_
 
 ## 🔰 Project State
