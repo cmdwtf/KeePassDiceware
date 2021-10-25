@@ -19,6 +19,15 @@ Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "KeePass", "..\..\OneDrive\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassDiceware", "KeePassDiceware.csproj", "{24E2DCE2-ED0F-4063-998E-9920CC35988F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meta", "Meta", "{233F7E6C-4743-4DBA-9AF3-BD41B9045820}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		KeePass.props = KeePass.props
+		LICENSE = LICENSE
+		README.md = README.md
+		.meta\version.info = .meta\version.info
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -142,5 +142,20 @@ namespace KeePassDiceware
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
+
+		private void LinkLabel_LinkClicked_OpenTagAsLink(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			if (sender is LinkLabel ll && ll.Tag is string url)
+			{
+				try
+				{
+					System.Diagnostics.Process.Start($"{url}?utm_source={nameof(KeePassDiceware)}");
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(this, $"Failed to open URL: {url}\n\n{ex.Message}", "Link Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
 	}
 }

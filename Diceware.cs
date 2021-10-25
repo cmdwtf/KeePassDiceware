@@ -1,7 +1,7 @@
 /*
 	KeePassDiceware Plugin
 	Copyright (C) 2021 cmd <https://github.com/cmdwtf>
-	Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
+	Portions Copyright (C) 2014-2021 Mark McGuill. All rights reserved. (Marked with comments.)
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -31,6 +31,12 @@ namespace KeePassDiceware
 {
 	public class Diceware
 	{
+
+		private const string WordListFileExtension = ".txt";
+
+		private const int DefaultSaltMinimumLength = 1;
+		private const int DefaultSaltMaximumLength = 4;
+
 		private const string AllUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		private const string AllLower = "abcdefghijklmnopqrstuvwxyz";
 		private const string AllDigits = "0123456789";
@@ -53,11 +59,6 @@ namespace KeePassDiceware
 				"\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF" +
 				"\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7" +
 				"\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
-
-		private const string WordListFileExtension = ".txt";
-
-		private const int DefaultSaltMinimumLength = 1;
-		private const int DefaultSaltMaximumLength = 4;
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
 		private static readonly Dictionary<char, string> L33tMap = new Dictionary<char, string>

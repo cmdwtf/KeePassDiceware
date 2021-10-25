@@ -23,6 +23,8 @@ namespace KeePassDiceware
 {
 	public sealed class KeePassDicewareExt : Plugin
 	{
+		public override string UpdateUrl => $"https://github.com/cmdwtf/{nameof(KeePassDiceware)}/.meta/version.info";
+
 		private IPluginHost _host = null;
 		private DicewarePwGenerator _gen = null;
 

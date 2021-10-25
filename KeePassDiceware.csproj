@@ -25,13 +25,16 @@
     <RepositoryType>git</RepositoryType>
     <NeutralLanguage>en-US</NeutralLanguage>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Title>$(Product)</Title>
+    <Title>$(ProductName)</Title>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
     <GenerateResourceUsePreserializedResources>True</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\*.txt" />
     <EmbeddedResource Include="Resources\*.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="KeePass.props" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />

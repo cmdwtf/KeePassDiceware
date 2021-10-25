@@ -22,10 +22,10 @@ namespace KeePassDiceware
             this.wordListsLabel = new System.Windows.Forms.Label();
             this.wordCountNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.OptionsGroupBox = new System.Windows.Forms.GroupBox();
-            this.ExplanationGroupBox = new System.Windows.Forms.GroupBox();
-            this.dicewareLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.xkcdLinkLabel = new System.Windows.Forms.LinkLabel();
             this.saltSourcesListView = new System.Windows.Forms.ListView();
+            this.ExplanationGroupBox = new System.Windows.Forms.GroupBox();
+            this.xkcdLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.dicewareLinkLabel = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.wordCountNumericUpDown)).BeginInit();
             this.OptionsGroupBox.SuspendLayout();
             this.ExplanationGroupBox.SuspendLayout();
@@ -209,37 +209,6 @@ namespace KeePassDiceware
             this.OptionsGroupBox.TabStop = false;
             this.OptionsGroupBox.Text = "Options";
             // 
-            // ExplanationGroupBox
-            // 
-            this.ExplanationGroupBox.Controls.Add(this.xkcdLinkLabel);
-            this.ExplanationGroupBox.Controls.Add(this.dicewareLinkLabel);
-            this.ExplanationGroupBox.Location = new System.Drawing.Point(12, 616);
-            this.ExplanationGroupBox.Name = "ExplanationGroupBox";
-            this.ExplanationGroupBox.Size = new System.Drawing.Size(467, 50);
-            this.ExplanationGroupBox.TabIndex = 9;
-            this.ExplanationGroupBox.TabStop = false;
-            this.ExplanationGroupBox.Text = "Explanation";
-            // 
-            // dicewareLinkLabel
-            // 
-            this.dicewareLinkLabel.AutoSize = true;
-            this.dicewareLinkLabel.Location = new System.Drawing.Point(14, 16);
-            this.dicewareLinkLabel.Name = "dicewareLinkLabel";
-            this.dicewareLinkLabel.Size = new System.Drawing.Size(153, 13);
-            this.dicewareLinkLabel.TabIndex = 0;
-            this.dicewareLinkLabel.TabStop = true;
-            this.dicewareLinkLabel.Text = "What is the Diceware method?";
-            // 
-            // xkcdLinkLabel
-            // 
-            this.xkcdLinkLabel.AutoSize = true;
-            this.xkcdLinkLabel.Location = new System.Drawing.Point(14, 29);
-            this.xkcdLinkLabel.Name = "xkcdLinkLabel";
-            this.xkcdLinkLabel.Size = new System.Drawing.Size(42, 13);
-            this.xkcdLinkLabel.TabIndex = 0;
-            this.xkcdLinkLabel.TabStop = true;
-            this.xkcdLinkLabel.Text = "XKCD?";
-            // 
             // saltSourcesListView
             // 
             this.saltSourcesListView.CheckBoxes = true;
@@ -252,9 +221,44 @@ namespace KeePassDiceware
             this.saltSourcesListView.UseCompatibleStateImageBehavior = false;
             this.saltSourcesListView.View = System.Windows.Forms.View.Details;
             // 
-            // DicewareOptionsForm
+            // ExplanationGroupBox
             // 
-            this.AcceptButton = this.okButton;
+            this.ExplanationGroupBox.Controls.Add(this.xkcdLinkLabel);
+            this.ExplanationGroupBox.Controls.Add(this.dicewareLinkLabel);
+            this.ExplanationGroupBox.Location = new System.Drawing.Point(12, 616);
+            this.ExplanationGroupBox.Name = "ExplanationGroupBox";
+            this.ExplanationGroupBox.Size = new System.Drawing.Size(467, 50);
+            this.ExplanationGroupBox.TabIndex = 9;
+            this.ExplanationGroupBox.TabStop = false;
+            this.ExplanationGroupBox.Text = "Explanation";
+            // 
+            // xkcdLinkLabel
+            // 
+            this.xkcdLinkLabel.AutoSize = true;
+            this.xkcdLinkLabel.Location = new System.Drawing.Point(14, 29);
+            this.xkcdLinkLabel.Name = "xkcdLinkLabel";
+            this.xkcdLinkLabel.Size = new System.Drawing.Size(42, 13);
+            this.xkcdLinkLabel.TabIndex = 0;
+            this.xkcdLinkLabel.TabStop = true;
+            this.xkcdLinkLabel.Tag = "https://xkcd.com/936/";
+            this.xkcdLinkLabel.Text = "XKCD?";
+            this.xkcdLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked_OpenTagAsLink);
+            // 
+            // dicewareLinkLabel
+            // 
+            this.dicewareLinkLabel.AutoSize = true;
+            this.dicewareLinkLabel.Location = new System.Drawing.Point(14, 16);
+            this.dicewareLinkLabel.Name = "dicewareLinkLabel";
+            this.dicewareLinkLabel.Size = new System.Drawing.Size(153, 13);
+            this.dicewareLinkLabel.TabIndex = 0;
+            this.dicewareLinkLabel.TabStop = true;
+            this.dicewareLinkLabel.Tag = "https://theworld.com/~reinhold/diceware.html";
+            this.dicewareLinkLabel.Text = "What is the Diceware method?";
+			this.dicewareLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked_OpenTagAsLink);
+			// 
+			// DicewareOptionsForm
+			// 
+			this.AcceptButton = this.okButton;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(493, 709);
             this.Controls.Add(this.ExplanationGroupBox);
