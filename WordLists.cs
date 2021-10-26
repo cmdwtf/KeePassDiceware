@@ -38,7 +38,7 @@ namespace KeePassDiceware
 		EffShort1point0 = 0x0000_0008,
 		[Category("Standard"), Description("EFF Short (v2.0 — More memorable, unique prefix)")]
 		EffShort2point0 = 0x0000_0010,
-		[Category("Standard"), Description("U.S. English, no swears")]
+		[Category("Standard"), Description("Google — U.S. English, no swears")]
 		Google = 0x0000_0020,
 
 		// Fandom
