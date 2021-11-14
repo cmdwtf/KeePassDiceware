@@ -16,13 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.ComponentModel;
+
 namespace KeePassDiceware
 {
 	public enum SaltType
 	{
+		[Description("No salt")]
 		None,
+		[Description("Prepended to the passphrase")]
 		Prefix,
+		[Description("Sprinkle into words at random")]
 		Sprinkle,
-		Suffix
+		[Description("Appended to the end of the passphrase")]
+		Suffix,
+		[Description("Between two words at random, once")]
+		BetweenOne,
+		[Description("Between each word")]
+		BetweenEach,
 	}
 }

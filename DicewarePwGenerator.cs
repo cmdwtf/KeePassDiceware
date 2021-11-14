@@ -86,7 +86,7 @@ namespace KeePassDiceware
 			using (var dof = new DicewareOptionsForm())
 			{
 				dof.Options = _options;
-				dof.GenerateTest = (Func<Options, string>)(o => Diceware.Generate(o, null));
+				dof.GenerateTest = o => Diceware.Generate(o, null);
 
 				if (dof.ShowDialog(GlobalWindowManager.TopWindow) == DialogResult.OK)
 				{

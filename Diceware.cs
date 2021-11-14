@@ -276,6 +276,18 @@ namespace KeePassDiceware
 				return;
 			}
 
+			if (salt == SaltType.BetweenEach)
+			{
+				// after each word sans the last, insert a generated salt chunk.
+				for (int scan = 0; scan < words.Length - 1; ++scan)
+				{
+					string generatedSalt = GenerateSalt(sources, DefaultSaltMinimumLength, DefaultSaltMaximumLength, random);
+					words[scan] = $"{words[scan]}{separator}{generatedSalt}";
+				}
+
+				return;
+			}
+
 
 			string singleSalt = GenerateSalt(sources, DefaultSaltMinimumLength, DefaultSaltMaximumLength, random);
 
@@ -286,6 +298,27 @@ namespace KeePassDiceware
 					break;
 				case SaltType.Suffix:
 					words[words.Length - 1] = $"{words[words.Length - 1]}{separator}{singleSalt}";
+					break;
+				case SaltType.BetweenOne:
+					if (words.Length <= 1)
+					{
+						// invalid case: can't insert between a single word.
+						throw new ArgumentOutOfRangeException(nameof(words.Length), "Salt cannot be inserted between a single word.");
+					}
+					// get a random index *between* the first and last word (e.g.: 2nd to 2nd from last)
+					int targetIndex = random.Range(1, words.Length - 2);
+					// choose if the salt should go before or after the word at the selected index
+					bool before = (random.GetRandomUInt64() & 1) == 0;
+
+					if (before)
+					{
+						words[targetIndex] = $"{singleSalt}{separator}{words[targetIndex]}";
+					}
+					else
+					{
+						words[targetIndex] = $"{words[targetIndex]}{separator}{singleSalt}";
+					}
+
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(salt));
