@@ -3,11 +3,19 @@
 # 🎲🔑 KeePassDiceware
 A [KeePass Password Safe](https://keepass.info/) plugin that provides a custom, configurable password generator implementation that generates [diceware](https://theworld.com/~reinhold/diceware.html) style [passwords](https://xkcd.com/936/).
 
+## 🛠️ Installation
+Download the latest .dll from the [Release page](https://github.com/cmdwtf/KeePassDiceware/releases) and copy it to your KeePass programm directory.<br>
+The default is ```C:\Program Files\KeePass Password Safe 2\Plugins``` and restart / start KeePass. If you did it correctly, it will be listet under Tools > Plugins.
+
 ## 🌄 Screenshots
 
 ![password generation preview](./.meta/preview-tab.png)
 
 _The Password Generation Preview_
+
+![algorithm_select](./.meta/algorithm-select.png)
+
+_Where to find and select Diceware in the Password Generator_
 
 ![options form](./.meta/options-form.png)
 
