@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -152,8 +153,15 @@ namespace KeePassDiceware
 
 		public static string Generate(Options settings, CryptoRandomStream random)
 		{
+			Debug.Assert(settings != null);
+
 			// get wordlists to choose words from
 			string[] wordlist = GetWordList(settings.WordLists).ToArray();
+
+			if (!wordlist.Any())
+			{
+				throw new InvalidOperationException("No word lists were selected, cannot generate password.");
+			}
 
 			// select the requested number of words
 			string[] selectedWords = (from i in Enumerable.Range(0, settings.WordCount)
