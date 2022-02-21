@@ -51,13 +51,8 @@ namespace KeePassDiceware
 		{
 			Host = host;
 
-			string optionsString = Host.CustomConfig.GetString(OptionsKey);
-			Options.TryDeserialize(optionsString, out _options);
-
-			if (_options == null)
-			{
-				_options = new Options();
-			}
+			// load (legacy) global options, if there are any.
+			LoadPluginOptions(null);
 		}
 
 		public override ProtectedString Generate(PwProfile profile, CryptoRandomStream random)
@@ -66,22 +61,45 @@ namespace KeePassDiceware
 			string uuidString = Convert.ToBase64String(Uuid.UuidBytes, Base64FormattingOptions.None);
 			Debug.Assert(profile.CustomAlgorithmUuid == uuidString);
 
+			LoadPluginOptions(profile.CustomAlgorithmOptions);
+
 			string result = Diceware.Generate(_options, random);
 
 			return new ProtectedString(false, result);
+		}
+
+		private void LoadPluginOptions(string optionalSerializedOptions)
+		{
+			// try to load options based on given serialized options
+			if (!string.IsNullOrWhiteSpace(optionalSerializedOptions))
+			{
+				if (Options.TryDeserialize(optionalSerializedOptions, out _options))
+				{
+					return;
+				}
+			}
+
+			// no luck with profile-specific options, load 'global' ones
+			// that may have been used with a previous version of the plugin.
+			string optionsString = Host.CustomConfig.GetString(OptionsKey);
+			if (!Options.TryDeserialize(optionsString, out _options))
+			{
+				return;
+			}
+
+			// failed to deserialize 'global' options, use new defaults.
+			_options = new Options();
 		}
 
 		public override string GetOptions(string strCurrentOptions)
 		{
 			if (Host == null)
 			{
-				return "";
+				return string.Empty;
 			}
 
-			if (Options.TryDeserialize(strCurrentOptions, out _options) == false)
-			{
-				_options = new Options();
-			}
+			// load the options given to us by KeePass as current
+			LoadPluginOptions(strCurrentOptions);
 
 			using (var dof = new DicewareOptionsForm())
 			{
@@ -91,11 +109,10 @@ namespace KeePassDiceware
 				if (dof.ShowDialog(GlobalWindowManager.TopWindow) == DialogResult.OK)
 				{
 					_options = dof.Options;
-					string serialized = dof.Options.Serialize();
-					Host.CustomConfig.SetString(OptionsKey, serialized);
-					return serialized;
+					return dof.Options.Serialize();
 				}
 
+				// user declined to save changes -- return original value.
 				return strCurrentOptions;
 			}
 		}
