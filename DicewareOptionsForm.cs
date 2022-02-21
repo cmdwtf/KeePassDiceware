@@ -133,6 +133,14 @@ namespace KeePassDiceware
 		private void OkButton_Click(object sender, System.EventArgs e)
 		{
 			Options = GetOptions();
+
+			if (Options.WordLists == WordLists.None)
+			{
+				MessageBox.Show(this, $"No word lists were selected. This will prevent the plugin from generating passwords. Please select at least one list.", "Options Validation Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogResult = DialogResult.Cancel;
+				return;
+			}
+
 			DialogResult = DialogResult.OK;
 			Close();
 		}
