@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="KeePass.props" />
   <PropertyGroup>
-    <TargetFrameworks>net4.5</TargetFrameworks>
+    <TargetFrameworks>net4.5.2</TargetFrameworks>
 
     <!-- *Must* be "KeePass Plugin" -->
     <Product>KeePass Plugin</Product>
