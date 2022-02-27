@@ -1,6 +1,6 @@
 /*
 	KeePassDiceware Plugin
-	Copyright (C) 2021 cmd <https://github.com/cmdwtf>
+	Copyright (C) 2021-2022 cmd <https://github.com/cmdwtf>
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -75,6 +75,7 @@ namespace KeePassDiceware
 			{
 				if (Options.TryDeserialize(optionalSerializedOptions, out _options))
 				{
+					_options ??= new Options();
 					return;
 				}
 			}
@@ -82,13 +83,14 @@ namespace KeePassDiceware
 			// no luck with profile-specific options, load 'global' ones
 			// that may have been used with a previous version of the plugin.
 			string optionsString = Host.CustomConfig.GetString(OptionsKey);
-			if (!Options.TryDeserialize(optionsString, out _options))
+			if (Options.TryDeserialize(optionsString, out _options))
 			{
+				_options ??= new Options();
 				return;
 			}
 
 			// failed to deserialize 'global' options, use new defaults.
-			_options = new Options();
+			_options = new Options(); 
 		}
 
 		public override string GetOptions(string strCurrentOptions)
@@ -101,20 +103,18 @@ namespace KeePassDiceware
 			// load the options given to us by KeePass as current
 			LoadPluginOptions(strCurrentOptions);
 
-			using (var dof = new DicewareOptionsForm())
+			using var dof = new DicewareOptionsForm();
+			dof.Options = _options;
+			dof.GenerateTest = o => Diceware.Generate(o, null);
+
+			if (dof.ShowDialog(GlobalWindowManager.TopWindow) == DialogResult.OK)
 			{
-				dof.Options = _options;
-				dof.GenerateTest = o => Diceware.Generate(o, null);
-
-				if (dof.ShowDialog(GlobalWindowManager.TopWindow) == DialogResult.OK)
-				{
-					_options = dof.Options;
-					return dof.Options.Serialize();
-				}
-
-				// user declined to save changes -- return original value.
-				return strCurrentOptions;
+				_options = dof.Options;
+				return dof.Options.Serialize();
 			}
+
+			// user declined to save changes -- return original value.
+			return strCurrentOptions;
 		}
 	}
 }

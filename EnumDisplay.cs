@@ -33,6 +33,6 @@ namespace KeePassDiceware
 	internal static class EnumDisplay
 	{
 		public static EnumDisplay<T> Create<T>(T value) where T : Enum
-			=> new EnumDisplay<T>(value);
+			=> new(value);
 	}
 }

@@ -62,7 +62,7 @@ namespace KeePassDiceware
 				"\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private static readonly Dictionary<char, string> L33tMap = new Dictionary<char, string>
+		private static readonly Dictionary<char, string> L33tMap = new()
 		{
 			{ 'A', "4" },
 			{ 'B', "|3" },
@@ -93,7 +93,7 @@ namespace KeePassDiceware
 		};
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private static readonly Dictionary<char, string> L3ssl33tMap = new Dictionary<char, string>
+		private static readonly Dictionary<char, string> L3ssl33tMap = new()
 		{
 			{ 'A', "4" },
 			{ 'E', "3" },
@@ -107,9 +107,9 @@ namespace KeePassDiceware
 			{ 'Z', "2" },
 		};
 
-		private static readonly Dictionary<WordLists, string[]> LoadedLists = new Dictionary<WordLists, string[]>();
+		private static readonly Dictionary<WordLists, string[]> LoadedLists = new();
 
-		private static readonly Dictionary<SaltSources, char[]> SaltOptionCache = new Dictionary<SaltSources, char[]>();
+		private static readonly Dictionary<SaltSources, char[]> SaltOptionCache = new();
 
 		private static char[] GetSaltOptions(SaltSources sources)
 		{
@@ -318,14 +318,9 @@ namespace KeePassDiceware
 					// choose if the salt should go before or after the word at the selected index
 					bool before = (random.GetRandomUInt64() & 1) == 0;
 
-					if (before)
-					{
-						words[targetIndex] = $"{singleSalt}{separator}{words[targetIndex]}";
-					}
-					else
-					{
-						words[targetIndex] = $"{words[targetIndex]}{separator}{singleSalt}";
-					}
+					words[targetIndex] = before
+						? $"{singleSalt}{separator}{words[targetIndex]}"
+						: $"{words[targetIndex]}{separator}{singleSalt}";
 
 					break;
 				default:
@@ -375,7 +370,7 @@ namespace KeePassDiceware
 		// via: https://stackoverflow.com/a/3314213/944605
 		public static IEnumerable<string> ReadEmbeddedResource(string resourceName, Encoding encoding = null)
 		{
-			encoding = encoding ?? Encoding.UTF8;
+			encoding ??= Encoding.UTF8;
 
 			var assembly = Assembly.GetAssembly(typeof(Diceware));
 			string resourcePath = resourceName;
@@ -387,16 +382,13 @@ namespace KeePassDiceware
 				resourcePath = manifestResourceNames.Single(str => str.EndsWith(resourceName));
 			}
 
-			using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+			using var reader = new StreamReader(stream, encoding);
+			string line;
+
+			while ((line = reader.ReadLine()) != null)
 			{
-				using (var reader = new StreamReader(stream, encoding))
-				{
-					string line;
-					while ((line = reader.ReadLine()) != null)
-					{
-						yield return line;
-					}
-				}
+				yield return line;
 			}
 		}
 	}

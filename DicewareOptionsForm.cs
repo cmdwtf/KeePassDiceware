@@ -8,7 +8,7 @@ namespace KeePassDiceware
 {
 	public partial class DicewareOptionsForm : Form
 	{
-		private Options _options = new Options();
+		private Options _options = new();
 		public Options Options
 		{
 			get => _options;
