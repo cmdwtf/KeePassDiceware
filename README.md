@@ -5,7 +5,7 @@ A [KeePass Password Safe](https://keepass.info/) plugin that provides a custom, 
 
 ## 🛠️ Installation
 Download the latest .dll from the [Release page](https://github.com/cmdwtf/KeePassDiceware/releases) and copy it to your KeePass programm directory.<br>
-The default is ```C:\Program Files\KeePass Password Safe 2\Plugins``` and restart / start KeePass. If you did it correctly, it will be listet under Tools > Plugins.
+The default is ```C:\Program Files\KeePass Password Safe 2\Plugins``` and restart / start KeePass. If you did it correctly, it will be listed under Tools > Plugins.
 
 ## 🌄 Screenshots
 
