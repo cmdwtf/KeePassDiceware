@@ -30,7 +30,7 @@ I decided to write this because there wasn't anything quite like it. I'm a big f
 ## 📝 License
 KeePassDiceware is [licensed](./LICENSE) under the AGPL 3.0 (SPDX-License-Identifier: AGPL-3.0).
 
-Copyright © 2021 [Chris March Dailey](https://cmd.wtf)
+Copyright © 2021 [Chris Marc Dailey](https://cmd.wtf)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
