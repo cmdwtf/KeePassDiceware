@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace KeePassDiceware
@@ -41,8 +42,10 @@ namespace KeePassDiceware
 
 		internal static Options Deserialize(string serialized)
 		{
-			var xml = new XmlSerializer(typeof(Options));
-			return xml.Deserialize(new StringReader(serialized)) as Options;
+			using StringReader stream = new(serialized);
+			using var reader = XmlReader.Create(stream);
+			XmlSerializer xml = new(typeof(Options));
+			return xml.Deserialize(reader) as Options;
 		}
 
 		internal static bool TryDeserialize(string serialized, out Options result)
