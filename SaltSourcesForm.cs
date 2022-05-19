@@ -135,7 +135,6 @@ namespace KeePassDiceware
 			DataValid = nameErrors == 0;
 		}
 
-
 		private int ValidateSourceNames()
 		{
 			int errors = 0;
@@ -164,6 +163,11 @@ namespace KeePassDiceware
 			}
 
 			return errors;
+		}
+
+		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
+		{
+			PopulateSaltSources(SaltSource.DefaultSources);
 		}
 	}
 }

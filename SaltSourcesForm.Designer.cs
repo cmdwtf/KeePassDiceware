@@ -14,6 +14,7 @@ namespace KeePassDiceware
 			this.SourceMinimum = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.SourceMaximum = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.SourceCharacterSet = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.RestoreDefaultsButton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.SaltSourceDataGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -102,11 +103,23 @@ namespace KeePassDiceware
 			this.SourceCharacterSet.HeaderText = "Characters in Source";
 			this.SourceCharacterSet.Name = "SourceCharacterSet";
 			// 
+			// RestoreDefaultsButton
+			// 
+			this.RestoreDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.RestoreDefaultsButton.Location = new System.Drawing.Point(12, 296);
+			this.RestoreDefaultsButton.Name = "RestoreDefaultsButton";
+			this.RestoreDefaultsButton.Size = new System.Drawing.Size(141, 23);
+			this.RestoreDefaultsButton.TabIndex = 4;
+			this.RestoreDefaultsButton.Text = "Restore &Defaults";
+			this.RestoreDefaultsButton.UseVisualStyleBackColor = true;
+			this.RestoreDefaultsButton.Click += new System.EventHandler(this.RestoreDefaultsButton_Click);
+			// 
 			// SaltSourcesForm
 			// 
 			this.AcceptButton = this.okButton;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(661, 331);
+			this.Controls.Add(this.RestoreDefaultsButton);
 			this.Controls.Add(this.SaltSourceDataGridView);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
@@ -131,5 +144,6 @@ namespace KeePassDiceware
 		private DataGridViewTextBoxColumn SourceMinimum;
 		private DataGridViewTextBoxColumn SourceMaximum;
 		private DataGridViewTextBoxColumn SourceCharacterSet;
+		private Button RestoreDefaultsButton;
 	}
 }
