@@ -36,32 +36,6 @@ namespace KeePassDiceware
 
 		private const string WordListFileExtension = ".txt";
 
-		private const int DefaultSaltMinimumLength = 1;
-		private const int DefaultSaltMaximumLength = 4;
-
-		private const string AllUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		private const string AllLower = "abcdefghijklmnopqrstuvwxyz";
-		private const string AllDigits = "0123456789";
-
-		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private const string AllSymbols = "+-=_@#$%^&;:,.<>/~\\[](){}?!|*'\"";
-		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private const string Emojis = @"😀😃😄😁😆😅";
-		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private const string Latin1Supplement =
-				"\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7" +
-				"\u00A8\u00A9\u00AA\u00AB\u00AC\u00AE\u00AF" +
-				"\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7" +
-				"\u00B8\u00B9\u00BA\u00BB\u00BC\u00BD\u00BE\u00BF" +
-				"\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7" +
-				"\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF" +
-				"\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7" +
-				"\u00D8\u00D9\u00DA\u00DB\u00DC\u00DD\u00DE\u00DF" +
-				"\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7" +
-				"\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF" +
-				"\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7" +
-				"\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
-
 		private static readonly char[] LookalikeCharacters = "I|1lO0".ToCharArray();
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
@@ -112,48 +86,6 @@ namespace KeePassDiceware
 
 		private static readonly Dictionary<WordLists, string[]> LoadedLists = new();
 
-		private static readonly Dictionary<SaltSources, char[]> SaltOptionCache = new();
-
-		private static char[] GetSaltOptions(SaltSources sources)
-		{
-			if (SaltOptionCache.ContainsKey(sources))
-			{
-				return SaltOptionCache[sources];
-			}
-
-			var sourceLists = new List<string>();
-
-			if (sources.HasFlag(SaltSources.Uppercase))
-			{
-				sourceLists.Add(AllUpper);
-			}
-			if (sources.HasFlag(SaltSources.Lowercase))
-			{
-				sourceLists.Add(AllLower);
-			}
-			if (sources.HasFlag(SaltSources.Digits))
-			{
-				sourceLists.Add(AllDigits);
-			}
-			if (sources.HasFlag(SaltSources.Symbols))
-			{
-				sourceLists.Add(AllSymbols);
-			}
-			if (sources.HasFlag(SaltSources.Emojis))
-			{
-				sourceLists.Add(Emojis);
-			}
-			if (sources.HasFlag(SaltSources.Latin1Supplement))
-			{
-				sourceLists.Add(Latin1Supplement);
-			}
-
-			char[] result = string.Concat(sourceLists).ToCharArray();
-			SaltOptionCache[sources] = result;
-
-			return result;
-		}
-
 		public static string Generate(Options options, PwProfile profile, CryptoRandomStream random)
 		{
 			Debug.Assert(options != null);
@@ -177,7 +109,7 @@ namespace KeePassDiceware
 			// mutate the words as requested
 			ApplyWordCasing(selectedWords, options.WordCasing, random);
 			ApplyL33tSpeak(selectedWords, options.L33tSpeak, random);
-			ApplySalt(selectedWords, options.Salt, options.SaltCharacterSources, options.WordSeparator, random);
+			ApplySalt(selectedWords, options.Salt, options.SaltSources, options.WordSeparator, random);
 			ApplyAdvancedSettings(selectedWords, options, profile, random);
 
 			// join the mutated words by the selected separator
@@ -203,7 +135,7 @@ namespace KeePassDiceware
 				}
 
 				if (options.AdvancedStrategy == AdvancedStrategy.SubstitueSalt &&
-					options.SaltCharacterSources == SaltSources.None)
+					options.SaltSources.All(s => !s.Enabled))
 				{
 					throw new InvalidOperationException("The excluded character strategy selected was to replace excluded characters with salt, but no salt sources were selected.");
 				}
@@ -288,7 +220,7 @@ namespace KeePassDiceware
 			return sb.ToString();
 		}
 
-		private static void ApplySalt(string[] words, SaltType salt, SaltSources sources, string separator, CryptoRandomStream random)
+		private static void ApplySalt(string[] words, SaltType salt, IEnumerable<SaltSource> sources, string separator, CryptoRandomStream random)
 		{
 			if (salt == SaltType.None)
 			{
@@ -307,7 +239,7 @@ namespace KeePassDiceware
 
 					int insertAt = random.Range(0, words[scan].Length - 1);
 
-					words[scan] = words[scan].Insert(insertAt, GenerateSalt(sources, DefaultSaltMinimumLength, DefaultSaltMaximumLength, random));
+					words[scan] = words[scan].Insert(insertAt, GenerateSalt(sources, random));
 				}
 
 				return;
@@ -318,7 +250,7 @@ namespace KeePassDiceware
 				// after each word sans the last, insert a generated salt chunk.
 				for (int scan = 0; scan < words.Length - 1; ++scan)
 				{
-					string generatedSalt = GenerateSalt(sources, DefaultSaltMinimumLength, DefaultSaltMaximumLength, random);
+					string generatedSalt = GenerateSalt(sources, random);
 					words[scan] = $"{words[scan]}{separator}{generatedSalt}";
 				}
 
@@ -326,7 +258,7 @@ namespace KeePassDiceware
 			}
 
 
-			string singleSalt = GenerateSalt(sources, DefaultSaltMinimumLength, DefaultSaltMaximumLength, random);
+			string singleSalt = GenerateSalt(sources, random);
 
 			switch (salt)
 			{
@@ -389,20 +321,35 @@ namespace KeePassDiceware
 				{
 					AdvancedStrategy.Drop => password.Replace(excludeStr, string.Empty),
 					AdvancedStrategy.SubstitueWordSeparator => password.Replace(excludeStr, options.WordSeparator),
-					AdvancedStrategy.SubstitueSalt => password.Replace(excludeStr, GenerateSalt(options.SaltCharacterSources, 1, 1, random)),
+					AdvancedStrategy.SubstitueSalt => password.Replace(excludeStr, GenerateSalt(options.SaltSources, random)),
 					_ => throw new InvalidOperationException($"Unhandled {nameof(AdvancedStrategy)}."),
 				};
 			}
 		}
 
-		public static string GenerateSalt(SaltSources sources, int minChars, int maxChars, CryptoRandomStream random)
+		public static string GenerateSalt(IEnumerable<SaltSource> sources, CryptoRandomStream random)
 		{
-			char[] saltOptions = GetSaltOptions(sources);
-			int length = random.Range(minChars, maxChars);
-			char[] chars = (from i in Enumerable.Range(0, length)
-							select saltOptions.SelectRandom(random))
-							.ToArray();
-			return new string(chars);
+			StringBuilder result = null;
+
+			foreach (SaltSource source in sources)
+			{
+				if (!source.Enabled)
+				{
+					continue;
+				}
+
+				char[] saltOptions = source.GetCharacterPool();
+
+				int length = random.Range(source.MinimumAmount, source.MaximumAmount);
+				char[] chars = (from i in Enumerable.Range(0, length)
+								select saltOptions.SelectRandom(random))
+								.ToArray();
+
+				result ??= new StringBuilder();
+				result.Append(chars);
+			}
+
+			return result?.ToString() ?? string.Empty;
 		}
 
 		public static IEnumerable<string> GetWordList(WordLists lists)

@@ -1,10 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 using KeePass.UI;
-
-using KeePassLib.Cryptography.PasswordGenerator;
 
 namespace KeePassDiceware
 {
@@ -20,6 +19,8 @@ namespace KeePassDiceware
 				PopulateInterface();
 			}
 		}
+
+		private List<SaltSource> _saltSources = new();
 
 		public DicewareOptionsForm()
 		{
@@ -46,12 +47,8 @@ namespace KeePassDiceware
 			saltComboBox.Items.AddRange(salts);
 			saltComboBox.SelectedIndex = 0;
 
-			saltSourcesListView.Columns.Add("Salt Source", -1);
-
-			ListViewItem[] saltSources = EnumTools.GetDisplays<SaltSources>()
-				.Select(v => new ListViewItem($"{v}"))
-				.ToArray();
-			saltSourcesListView.Items.AddRange(saltSources);
+			_saltSources.Clear();
+			activeSaltSourcesLabel.Text = string.Empty;
 
 			wordListsListView.Columns.Add("Word List", -1);
 
@@ -89,8 +86,21 @@ namespace KeePassDiceware
 			advancedStrategyComboBox.SelectedIndex = advancedStrategyComboBox.FindStringExact(Options.AdvancedStrategy.GetDescription());
 			l33tSpeakComboBox.SelectedIndex = l33tSpeakComboBox.FindStringExact(Options.L33tSpeak.GetDescription());
 			saltComboBox.SelectedIndex = saltComboBox.FindStringExact(Options.Salt.GetDescription());
-			UpdateListView(saltSourcesListView, Options.SaltCharacterSources);
+			_saltSources = new(Options.SaltSources);
+			UpdateSaltSourcesLabel();
 			UpdateListView(wordListsListView, Options.WordLists);
+		}
+
+		private void UpdateSaltSourcesLabel()
+		{
+			IEnumerable<string> sources = _saltSources.Where(ss => ss.Enabled)
+				.Select(ss => $"{ss.Name} "
+					+ (ss.MinimumAmount == ss.MaximumAmount
+						? $"({ss.MinimumAmount})"
+						: $"({ss.MinimumAmount}-{ss.MaximumAmount})")
+					);
+
+			activeSaltSourcesLabel.Text = string.Join(", ", sources);
 		}
 
 		private void UpdateListView<T>(ListView view, T flags) where T : Enum
@@ -114,7 +124,7 @@ namespace KeePassDiceware
 				L33tSpeak = EnumTools.FromDescription<L33tSpeakType>(l33tSpeakComboBox.SelectedItem.ToString()),
 				AdvancedStrategy = EnumTools.FromDescription<AdvancedStrategy>(advancedStrategyComboBox.SelectedItem.ToString()),
 				Salt = EnumTools.FromDescription<SaltType>(saltComboBox.SelectedItem.ToString()),
-				SaltCharacterSources = GetListViewFlags<SaltSources>(saltSourcesListView),
+				SaltSources = new(_saltSources),
 				WordLists = GetListViewFlags<WordLists>(wordListsListView)
 			};
 		}
@@ -170,6 +180,20 @@ namespace KeePassDiceware
 					MessageBox.Show(this, $"Failed to open URL: {url}\n\n{ex.Message}", "Link Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
+		}
+
+		private void EditSaltSourcesButton_Click(object sender, EventArgs e)
+		{
+			SaltSourcesForm ssf = new();
+			ssf.PopulateSaltSources(_saltSources);
+
+			if (ssf.ShowDialog(this) == DialogResult.Cancel)
+			{
+				return;
+			}
+
+			_saltSources = ssf.Result;
+			UpdateSaltSourcesLabel();
 		}
 	}
 }

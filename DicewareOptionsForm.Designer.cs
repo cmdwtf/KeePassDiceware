@@ -6,6 +6,7 @@ namespace KeePassDiceware
 	{
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DicewareOptionsForm));
 			this.okButton = new System.Windows.Forms.Button();
 			this.cancelButton = new System.Windows.Forms.Button();
 			this.wordSeparatorPromptedTextBox = new KeePass.UI.PromptedTextBox();
@@ -18,12 +19,13 @@ namespace KeePassDiceware
 			this.wordCasingsLabel = new System.Windows.Forms.Label();
 			this.l33tSpeakLabel = new System.Windows.Forms.Label();
 			this.saltsLabel = new System.Windows.Forms.Label();
-			this.saltSourcesLabel = new System.Windows.Forms.Label();
 			this.wordListsLabel = new System.Windows.Forms.Label();
 			this.wordCountNumericUpDown = new System.Windows.Forms.NumericUpDown();
 			this.OptionsGroupBox = new System.Windows.Forms.GroupBox();
-			this.saltSourcesListView = new System.Windows.Forms.ListView();
+			this.EditSaltSourcesButton = new System.Windows.Forms.Button();
 			this.advancedStrategyLabel = new System.Windows.Forms.Label();
+			this.activeSaltSourcesLabel = new System.Windows.Forms.Label();
+			this.saltSourcesLabel = new System.Windows.Forms.Label();
 			this.advancedStrategyComboBox = new System.Windows.Forms.ComboBox();
 			this.ExplanationGroupBox = new System.Windows.Forms.GroupBox();
 			this.xkcdLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -148,15 +150,6 @@ namespace KeePassDiceware
 			this.saltsLabel.TabIndex = 7;
 			this.saltsLabel.Text = "Salt:";
 			// 
-			// saltSourcesLabel
-			// 
-			this.saltSourcesLabel.AutoSize = true;
-			this.saltSourcesLabel.Location = new System.Drawing.Point(14, 174);
-			this.saltSourcesLabel.Name = "saltSourcesLabel";
-			this.saltSourcesLabel.Size = new System.Drawing.Size(116, 13);
-			this.saltSourcesLabel.TabIndex = 7;
-			this.saltSourcesLabel.Text = "Salt character sources:";
-			// 
 			// wordListsLabel
 			// 
 			this.wordListsLabel.AutoSize = true;
@@ -190,13 +183,14 @@ namespace KeePassDiceware
 			// 
 			// OptionsGroupBox
 			// 
-			this.OptionsGroupBox.Controls.Add(this.saltSourcesListView);
+			this.OptionsGroupBox.Controls.Add(this.EditSaltSourcesButton);
 			this.OptionsGroupBox.Controls.Add(this.wordCountLabel);
 			this.OptionsGroupBox.Controls.Add(this.wordSeparatorPromptedTextBox);
 			this.OptionsGroupBox.Controls.Add(this.wordCountNumericUpDown);
 			this.OptionsGroupBox.Controls.Add(this.wordListsLabel);
 			this.OptionsGroupBox.Controls.Add(this.wordCasingComboBox);
 			this.OptionsGroupBox.Controls.Add(this.advancedStrategyLabel);
+			this.OptionsGroupBox.Controls.Add(this.activeSaltSourcesLabel);
 			this.OptionsGroupBox.Controls.Add(this.saltSourcesLabel);
 			this.OptionsGroupBox.Controls.Add(this.l33tSpeakComboBox);
 			this.OptionsGroupBox.Controls.Add(this.saltsLabel);
@@ -213,17 +207,15 @@ namespace KeePassDiceware
 			this.OptionsGroupBox.TabStop = false;
 			this.OptionsGroupBox.Text = "Options";
 			// 
-			// saltSourcesListView
+			// EditSaltSourcesButton
 			// 
-			this.saltSourcesListView.CheckBoxes = true;
-			this.saltSourcesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.saltSourcesListView.HideSelection = false;
-			this.saltSourcesListView.Location = new System.Drawing.Point(148, 174);
-			this.saltSourcesListView.Name = "saltSourcesListView";
-			this.saltSourcesListView.Size = new System.Drawing.Size(300, 91);
-			this.saltSourcesListView.TabIndex = 6;
-			this.saltSourcesListView.UseCompatibleStateImageBehavior = false;
-			this.saltSourcesListView.View = System.Windows.Forms.View.Details;
+			this.EditSaltSourcesButton.Location = new System.Drawing.Point(331, 174);
+			this.EditSaltSourcesButton.Name = "EditSaltSourcesButton";
+			this.EditSaltSourcesButton.Size = new System.Drawing.Size(117, 23);
+			this.EditSaltSourcesButton.TabIndex = 8;
+			this.EditSaltSourcesButton.Text = "Edit Salt Sources";
+			this.EditSaltSourcesButton.UseVisualStyleBackColor = true;
+			this.EditSaltSourcesButton.Click += new System.EventHandler(this.EditSaltSourcesButton_Click);
 			// 
 			// advancedStrategyLabel
 			// 
@@ -233,6 +225,23 @@ namespace KeePassDiceware
 			this.advancedStrategyLabel.Size = new System.Drawing.Size(101, 13);
 			this.advancedStrategyLabel.TabIndex = 7;
 			this.advancedStrategyLabel.Text = "Advanced Strategy:";
+			// 
+			// activeSaltSourcesLabel
+			// 
+			this.activeSaltSourcesLabel.Location = new System.Drawing.Point(145, 174);
+			this.activeSaltSourcesLabel.Name = "activeSaltSourcesLabel";
+			this.activeSaltSourcesLabel.Size = new System.Drawing.Size(180, 94);
+			this.activeSaltSourcesLabel.TabIndex = 7;
+			this.activeSaltSourcesLabel.Text = resources.GetString("activeSaltSourcesLabel.Text");
+			// 
+			// saltSourcesLabel
+			// 
+			this.saltSourcesLabel.AutoSize = true;
+			this.saltSourcesLabel.Location = new System.Drawing.Point(14, 174);
+			this.saltSourcesLabel.Name = "saltSourcesLabel";
+			this.saltSourcesLabel.Size = new System.Drawing.Size(116, 13);
+			this.saltSourcesLabel.TabIndex = 7;
+			this.saltSourcesLabel.Text = "Salt character sources:";
 			// 
 			// advancedStrategyComboBox
 			// 
@@ -316,15 +325,16 @@ namespace KeePassDiceware
 		private Label wordCasingsLabel;
 		private Label l33tSpeakLabel;
 		private Label saltsLabel;
-		private Label saltSourcesLabel;
 		private Label wordListsLabel;
 		private NumericUpDown wordCountNumericUpDown;
 		private GroupBox OptionsGroupBox;
 		private GroupBox ExplanationGroupBox;
 		private LinkLabel xkcdLinkLabel;
 		private LinkLabel dicewareLinkLabel;
-		private ListView saltSourcesListView;
 		private Label advancedStrategyLabel;
 		private ComboBox advancedStrategyComboBox;
+		private Label activeSaltSourcesLabel;
+		private Label saltSourcesLabel;
+		private Button EditSaltSourcesButton;
 	}
 }

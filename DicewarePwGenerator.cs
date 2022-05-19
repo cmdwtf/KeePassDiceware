@@ -75,7 +75,7 @@ namespace KeePassDiceware
 			{
 				if (Options.TryDeserialize(optionalSerializedOptions, out _options))
 				{
-					_options ??= new Options();
+					_options ??= Options.Default();
 					return;
 				}
 			}
@@ -85,12 +85,12 @@ namespace KeePassDiceware
 			string optionsString = Host.CustomConfig.GetString(OptionsKey);
 			if (Options.TryDeserialize(optionsString, out _options))
 			{
-				_options ??= new Options();
+				_options ??= Options.Default();
 				return;
 			}
 
 			// failed to deserialize 'global' options, use new defaults.
-			_options = new Options(); 
+			_options = Options.Default(); 
 		}
 
 		public override string GetOptions(string strCurrentOptions)

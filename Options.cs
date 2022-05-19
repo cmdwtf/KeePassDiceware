@@ -17,7 +17,9 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -32,7 +34,7 @@ namespace KeePassDiceware
 		public WordCasingType WordCasing { get; set; } = WordCasingType.TitleCase;
 		public L33tSpeakType L33tSpeak { get; set; } = L33tSpeakType.None;
 		public SaltType Salt { get; set; } = SaltType.None;
-		public SaltSources SaltCharacterSources { get; set; } = SaltSources.All & ~(SaltSources.Emojis);
+		public List<SaltSource> SaltSources { get; set; } = new();
 		public WordLists WordLists { get; set; } =
 			WordLists.Diceware
 			| WordLists.EffLarge
@@ -41,12 +43,48 @@ namespace KeePassDiceware
 
 		public Options() { }
 
+		public static Options Default()
+		{
+			return new()
+			{
+				SaltSources = SaltSource.DefaultSources,
+			};
+		}
+
 		internal static Options Deserialize(string serialized)
 		{
 			using StringReader stream = new(serialized);
 			using var reader = XmlReader.Create(stream);
 			XmlSerializer xml = new(typeof(Options));
-			return xml.Deserialize(reader) as Options;
+			xml.UnknownElement += Xml_UnknownElement;
+			Options result = xml.Deserialize(reader) as Options;
+			return result;
+		}
+
+		private static void Xml_UnknownElement(object sender, XmlElementEventArgs e)
+		{
+			if (e.ObjectBeingDeserialized is not Options opts)
+			{
+				return;
+			}
+
+			// handle legacy salt character source option
+			if (e.Element.Name == "SaltCharacterSources")
+			{
+				string[] saltSourceNames = e.Element.InnerText.Split(new char[] { ' ' });
+
+
+
+				foreach (SaltSource ss in opts.SaltSources)
+				{
+					if (saltSourceNames.Any(ssn => string.Compare(ssn, ss.Key) == 0) == false)
+					{
+						ss.Disable();
+					}
+				}
+			}
+
+			e.ToString();
 		}
 
 		internal static bool TryDeserialize(string serialized, out Options result)
