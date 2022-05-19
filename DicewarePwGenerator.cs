@@ -63,7 +63,7 @@ namespace KeePassDiceware
 
 			LoadPluginOptions(profile.CustomAlgorithmOptions);
 
-			string result = Diceware.Generate(_options, random);
+			string result = Diceware.Generate(_options, profile, random);
 
 			return new ProtectedString(false, result);
 		}
@@ -105,7 +105,6 @@ namespace KeePassDiceware
 
 			using var dof = new DicewareOptionsForm();
 			dof.Options = _options;
-			dof.GenerateTest = o => Diceware.Generate(o, null);
 
 			if (dof.ShowDialog(GlobalWindowManager.TopWindow) == DialogResult.OK)
 			{

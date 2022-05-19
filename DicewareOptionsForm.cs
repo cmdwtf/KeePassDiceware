@@ -4,6 +4,8 @@ using System.Windows.Forms;
 
 using KeePass.UI;
 
+using KeePassLib.Cryptography.PasswordGenerator;
+
 namespace KeePassDiceware
 {
 	public partial class DicewareOptionsForm : Form
@@ -18,8 +20,6 @@ namespace KeePassDiceware
 				PopulateInterface();
 			}
 		}
-
-		public Func<Options, string> GenerateTest { get; internal set; }
 
 		public DicewareOptionsForm()
 		{
@@ -37,6 +37,10 @@ namespace KeePassDiceware
 			EnumDisplay<L33tSpeakType>[] l33tSpeak = EnumTools.GetDisplays<L33tSpeakType>();
 			l33tSpeakComboBox.Items.AddRange(l33tSpeak);
 			l33tSpeakComboBox.SelectedIndex = 0;
+
+			EnumDisplay<AdvancedStrategy>[] advancedStrat = EnumTools.GetDisplays<AdvancedStrategy>();
+			advancedStrategyComboBox.Items.AddRange(advancedStrat);
+			advancedStrategyComboBox.SelectedIndex = 0;
 
 			EnumDisplay<SaltType>[] salts = EnumTools.GetDisplays<SaltType>();
 			saltComboBox.Items.AddRange(salts);
@@ -82,6 +86,7 @@ namespace KeePassDiceware
 			wordCountNumericUpDown.Value = Options.WordCount;
 			wordSeparatorPromptedTextBox.Text = Options.WordSeparator;
 			wordCasingComboBox.SelectedIndex = wordCasingComboBox.FindStringExact(Options.WordCasing.GetDescription());
+			advancedStrategyComboBox.SelectedIndex = advancedStrategyComboBox.FindStringExact(Options.AdvancedStrategy.GetDescription());
 			l33tSpeakComboBox.SelectedIndex = l33tSpeakComboBox.FindStringExact(Options.L33tSpeak.GetDescription());
 			saltComboBox.SelectedIndex = saltComboBox.FindStringExact(Options.Salt.GetDescription());
 			UpdateListView(saltSourcesListView, Options.SaltCharacterSources);
@@ -107,6 +112,7 @@ namespace KeePassDiceware
 				WordSeparator = wordSeparatorPromptedTextBox.Text,
 				WordCasing = EnumTools.FromDescription<WordCasingType>(wordCasingComboBox.SelectedItem.ToString()),
 				L33tSpeak = EnumTools.FromDescription<L33tSpeakType>(l33tSpeakComboBox.SelectedItem.ToString()),
+				AdvancedStrategy = EnumTools.FromDescription<AdvancedStrategy>(advancedStrategyComboBox.SelectedItem.ToString()),
 				Salt = EnumTools.FromDescription<SaltType>(saltComboBox.SelectedItem.ToString()),
 				SaltCharacterSources = GetListViewFlags<SaltSources>(saltSourcesListView),
 				WordLists = GetListViewFlags<WordLists>(wordListsListView)

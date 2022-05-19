@@ -27,6 +27,7 @@ using System.Reflection;
 using System.Text;
 
 using KeePassLib.Cryptography;
+using KeePassLib.Cryptography.PasswordGenerator;
 
 namespace KeePassDiceware
 {
@@ -60,6 +61,8 @@ namespace KeePassDiceware
 				"\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF" +
 				"\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7" +
 				"\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
+
+		private static readonly char[] LookalikeCharacters = "I|1lO0".ToCharArray();
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
 		private static readonly Dictionary<char, string> L33tMap = new()
@@ -151,12 +154,15 @@ namespace KeePassDiceware
 			return result;
 		}
 
-		public static string Generate(Options settings, CryptoRandomStream random)
+		public static string Generate(Options options, PwProfile profile, CryptoRandomStream random)
 		{
-			Debug.Assert(settings != null);
+			Debug.Assert(options != null);
+			Debug.Assert(profile != null);
+
+			VerifyOptions(options, profile);
 
 			// get wordlists to choose words from
-			string[] wordlist = GetWordList(settings.WordLists).ToArray();
+			string[] wordlist = GetWordList(options.WordLists).ToArray();
 
 			if (!wordlist.Any())
 			{
@@ -164,21 +170,44 @@ namespace KeePassDiceware
 			}
 
 			// select the requested number of words
-			string[] selectedWords = (from i in Enumerable.Range(0, settings.WordCount)
+			string[] selectedWords = (from i in Enumerable.Range(0, options.WordCount)
 									  select wordlist.SelectRandom(random))
 									 .ToArray();
 
-
 			// mutate the words as requested
-			ApplyWordCasing(selectedWords, settings.WordCasing, random);
-			ApplyL33tSpeak(selectedWords, settings.L33tSpeak, random);
-			ApplySalt(selectedWords, settings.Salt, settings.SaltCharacterSources, settings.WordSeparator, random);
+			ApplyWordCasing(selectedWords, options.WordCasing, random);
+			ApplyL33tSpeak(selectedWords, options.L33tSpeak, random);
+			ApplySalt(selectedWords, options.Salt, options.SaltCharacterSources, options.WordSeparator, random);
+			ApplyAdvancedSettings(selectedWords, options, profile, random);
 
 			// join the mutated words by the selected separator
-			string joined = string.Join(settings.WordSeparator, selectedWords);
+			string joined = string.Join(options.WordSeparator, selectedWords);
 
 			// and return the result!
 			return joined;
+		}
+
+		private static void VerifyOptions(Options options, PwProfile profile)
+		{
+			if (profile.NoRepeatingCharacters)
+			{
+				throw new NotSupportedException("The 'each character must occur at most once' advanced setting is unsupported for this generator.");
+			}
+
+			if (profile.ExcludeLookAlike || profile.ExcludeCharacters.Length > 0)
+			{
+				if (options.AdvancedStrategy == AdvancedStrategy.SubstitueWordSeparator &&
+					options.WordSeparator.Length == 0)
+				{
+					throw new InvalidOperationException("The excluded character strategy selected was to replace excluded characters with the word separator, but no word separator was specified.");
+				}
+
+				if (options.AdvancedStrategy == AdvancedStrategy.SubstitueSalt &&
+					options.SaltCharacterSources == SaltSources.None)
+				{
+					throw new InvalidOperationException("The excluded character strategy selected was to replace excluded characters with salt, but no salt sources were selected.");
+				}
+			}
 		}
 
 		private static void ApplyWordCasing(string[] words, WordCasingType wordCasing, CryptoRandomStream random)
@@ -325,6 +354,44 @@ namespace KeePassDiceware
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(salt));
+			}
+		}
+
+		private static void ApplyAdvancedSettings(string[] words, Options options, PwProfile profile, CryptoRandomStream random)
+		{
+			if (profile.ExcludeLookAlike == false &&
+				profile.ExcludeCharacters.Length == 0)
+			{
+				return;
+			}
+
+			for (int scan = 0; scan < words.Length; ++scan)
+			{
+				if (profile.ExcludeLookAlike)
+				{
+					foreach (char lookalike in LookalikeCharacters)
+					{
+						words[scan] = AdvancedSettingChararacterReplace(words[scan], lookalike, options, random);
+					}
+				}
+
+				foreach (char excluded in profile.ExcludeCharacters)
+				{
+					words[scan] = AdvancedSettingChararacterReplace(words[scan], excluded, options, random);
+				}
+			}
+
+			string AdvancedSettingChararacterReplace(string password, char exclude, Options options, CryptoRandomStream random)
+			{
+				string excludeStr = exclude.ToString();
+
+				return options.AdvancedStrategy switch
+				{
+					AdvancedStrategy.Drop => password.Replace(excludeStr, string.Empty),
+					AdvancedStrategy.SubstitueWordSeparator => password.Replace(excludeStr, options.WordSeparator),
+					AdvancedStrategy.SubstitueSalt => password.Replace(excludeStr, GenerateSalt(options.SaltCharacterSources, 1, 1, random)),
+					_ => throw new InvalidOperationException($"Unhandled {nameof(AdvancedStrategy)}."),
+				};
 			}
 		}
 

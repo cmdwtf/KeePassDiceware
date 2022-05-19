@@ -37,6 +37,7 @@ namespace KeePassDiceware
 			WordLists.Diceware
 			| WordLists.EffLarge
 			| WordLists.Google;
+		public AdvancedStrategy AdvancedStrategy { get; set; } = AdvancedStrategy.Drop;
 
 		public Options() { }
 
@@ -51,6 +52,11 @@ namespace KeePassDiceware
 		internal static bool TryDeserialize(string serialized, out Options result)
 		{
 			result = null;
+
+			if (string.IsNullOrWhiteSpace(serialized))
+			{
+				return false;
+			}
 
 			try
 			{
