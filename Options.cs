@@ -73,7 +73,8 @@ namespace KeePassDiceware
 			{
 				string[] saltSourceNames = e.Element.InnerText.Split(new char[] { ' ' });
 
-
+				// start from the defaults
+				opts.SaltSources = SaltSource.DefaultSources;
 
 				foreach (SaltSource ss in opts.SaltSources)
 				{
