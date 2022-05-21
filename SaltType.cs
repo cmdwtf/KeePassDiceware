@@ -30,6 +30,8 @@ namespace KeePassDiceware
 		Sprinkle,
 		[Description("Appended to the end of the passphrase")]
 		Suffix,
+		[Description("Appended to the end, after a word separator")]
+		SuffixAsWord,
 		[Description("Between two words at random, once")]
 		BetweenOne,
 		[Description("Between each word")]

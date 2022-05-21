@@ -266,6 +266,9 @@ namespace KeePassDiceware
 					words[0] = $"{singleSalt}{separator}{words[0]}";
 					break;
 				case SaltType.Suffix:
+					words[words.Length - 1] = $"{words[words.Length - 1]}{singleSalt}";
+					break;
+				case SaltType.SuffixAsWord:
 					words[words.Length - 1] = $"{words[words.Length - 1]}{separator}{singleSalt}";
 					break;
 				case SaltType.BetweenOne:
