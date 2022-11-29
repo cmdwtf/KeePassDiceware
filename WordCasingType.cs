@@ -28,6 +28,8 @@ namespace KeePassDiceware
 		Uppercase,
 		[Description("Title Case")]
 		TitleCase,
-		Random
+		Random,
+		[Description("Random Whole Words")]
+		WholeWord,
 	};
 }

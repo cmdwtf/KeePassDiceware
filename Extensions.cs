@@ -14,5 +14,7 @@ namespace KeePassDiceware
 			int choice = random.Range(0, array.Length - 1);
 			return array[choice];
 		}
+
+		public static bool CoinToss(this CryptoRandomStream random) => (random.GetRandomUInt64() & 1) == 0;
 	}
 }

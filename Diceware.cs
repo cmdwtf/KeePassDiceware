@@ -172,6 +172,12 @@ namespace KeePassDiceware
 											.ToArray();
 						words[scan] = new string(randomized);
 						break;
+					case WordCasingType.WholeWord:
+						if (random.CoinToss())
+						{
+							words[scan] = words[scan].ToUpperInvariant();
+						}
+						break;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(wordCasing));
 				}
