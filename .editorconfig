@@ -357,7 +357,7 @@ dotnet_naming_style.first_upper.word_separator =
 dotnet_naming_style.first_upper.capitalization = first_word_upper
 
 # XML Files
-[*.{csproj,props,xml}]
+[*.{csproj,props,xml,config}]
 
 # Indentation and spacing
 indent_size = 2

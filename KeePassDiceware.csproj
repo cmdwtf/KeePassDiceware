@@ -40,6 +40,8 @@
     <EmbeddedResource Include="Resources\*.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="App.config" />
+    <EmbeddedResource Include="App.config" />
     <None Remove="KeePass.props" />
   </ItemGroup>
   <ItemGroup>
