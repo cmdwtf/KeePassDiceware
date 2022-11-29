@@ -5,7 +5,7 @@
     <KeePassPluginsPath>$(KeePassPath)Plugins\</KeePassPluginsPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KeePass">
+    <Reference Include="KeePass, Culture=neutral, PublicKeyToken=fed2ed7716aecf5c">
       <HintPath>$(KeePassPath)KeePass.exe</HintPath>
     </Reference>
   </ItemGroup>
