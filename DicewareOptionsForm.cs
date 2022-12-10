@@ -27,6 +27,7 @@ namespace KeePassDiceware
 			InitializeComponent();
 
 			InitializeEnumOptions();
+
 		}
 
 		private void InitializeEnumOptions()

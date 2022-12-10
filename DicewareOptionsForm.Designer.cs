@@ -30,15 +30,17 @@ namespace KeePassDiceware
 			this.ExplanationGroupBox = new System.Windows.Forms.GroupBox();
 			this.xkcdLinkLabel = new System.Windows.Forms.LinkLabel();
 			this.dicewareLinkLabel = new System.Windows.Forms.LinkLabel();
+			this.MainPanel = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.wordCountNumericUpDown)).BeginInit();
 			this.OptionsGroupBox.SuspendLayout();
 			this.ExplanationGroupBox.SuspendLayout();
+			this.MainPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// okButton
 			// 
 			this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.okButton.Location = new System.Drawing.Point(406, 674);
+			this.okButton.Location = new System.Drawing.Point(407, 671);
 			this.okButton.Name = "okButton";
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 0;
@@ -50,7 +52,7 @@ namespace KeePassDiceware
 			// 
 			this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(325, 674);
+			this.cancelButton.Location = new System.Drawing.Point(326, 671);
 			this.cancelButton.Name = "cancelButton";
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 0;
@@ -287,17 +289,27 @@ namespace KeePassDiceware
 			this.dicewareLinkLabel.Text = "What is the Diceware method?";
 			this.dicewareLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel_LinkClicked_OpenTagAsLink);
 			// 
+			// MainPanel
+			// 
+			this.MainPanel.Controls.Add(this.okButton);
+			this.MainPanel.Controls.Add(this.cancelButton);
+			this.MainPanel.Controls.Add(this.ExplanationGroupBox);
+			this.MainPanel.Controls.Add(this.OptionsGroupBox);
+			this.MainPanel.Location = new System.Drawing.Point(-1, 3);
+			this.MainPanel.Name = "MainPanel";
+			this.MainPanel.Size = new System.Drawing.Size(494, 706);
+			this.MainPanel.TabIndex = 10;
+			// 
 			// DicewareOptionsForm
 			// 
 			this.AcceptButton = this.okButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.AutoScroll = true;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(493, 709);
-			this.Controls.Add(this.ExplanationGroupBox);
-			this.Controls.Add(this.OptionsGroupBox);
-			this.Controls.Add(this.cancelButton);
-			this.Controls.Add(this.okButton);
+			this.Controls.Add(this.MainPanel);
+			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -311,6 +323,7 @@ namespace KeePassDiceware
 			this.OptionsGroupBox.PerformLayout();
 			this.ExplanationGroupBox.ResumeLayout(false);
 			this.ExplanationGroupBox.PerformLayout();
+			this.MainPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -338,5 +351,6 @@ namespace KeePassDiceware
 		private Label activeSaltSourcesLabel;
 		private Label saltSourcesLabel;
 		private Button EditSaltSourcesButton;
+		private Panel MainPanel;
 	}
 }
