@@ -28,9 +28,9 @@ This plugin exists because I wanted it for my personal use. I'm sharing it in th
 I decided to write this because there wasn't anything quite like it. I'm a big fan of [Strongbox](https://strongboxsafe.com/), an iOS and macOS password safe compatable with the KeePass database format. The password generator built into Strongbox offers a diceware method. I decided to replicate it's behavior here, and even offer the same wordlists! The Strongbox source (AGPL-3.0) is available [here](https://github.com/strongbox-password-safe/Strongbox).
 
 ## 📝 License
-KeePassDiceware is [licensed](./LICENSE) under the AGPL 3.0 (SPDX-License-Identifier: AGPL-3.0).
+KeePassDiceware is [licensed](./LICENSE) under the AGPL 3.0 (SPDX-License-Identifier: `AGPL-3.0-or-later`).
 
-Copyright © 2021 [Chris Marc Dailey](https://cmd.wtf)
+Copyright © 2021-2023 [Chris Marc Dailey](https://cmd.wtf)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
