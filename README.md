@@ -43,3 +43,6 @@ KeePassDiceware makes use of licensed portions of code, each licensed under thei
 
  - NuGet package: [Microsoft.SourceLink.Git](https://github.com/dotnet/sourcelink) — MIT — Copyright (c) .NET Foundation and Contributors
 
+- [Diceware Word List](https://theworld.com/~reinhold/dicewarewordlist.pdf) - Free, non-commercial, distribution of the entire text with attribution. All other rights reserved. - Copyright (c) 1995-2004 Arnold G. Reinhold
+
+- German Diceware Word List compiled from [DeReKo 2014 term frequency list](https://www1.ids-mannheim.de/kl/projekte/methoden/derewo.html) - CC BY-NC 3.0 - Leibniz-Institut für Deutsche Sprache
