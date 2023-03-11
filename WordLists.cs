@@ -74,5 +74,7 @@ namespace KeePassDiceware
 		Polish = 0x0200_0000,
 		[Category("Languages")]
 		Swedish = 0x0400_0000,
+		[Category("Languages")]
+		Spanish = 0x0800_0000,
 	}
 }
