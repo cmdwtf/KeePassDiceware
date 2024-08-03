@@ -165,7 +165,7 @@ namespace KeePassDiceware
 						break;
 					case WordCasingType.Random:
 						char[] randomized = (from c in words[scan].ToCharArray()
-											 select ((random.GetRandomUInt64() & 1) == 0
+											 select (random.CoinToss()
 												 ? char.ToUpper(c)
 												 : char.ToLower(c))
 											)
@@ -194,7 +194,7 @@ namespace KeePassDiceware
 			for (int scan = 0; scan < words.Length; ++scan)
 			{
 				bool mutateWord = l33tSpeak.HasFlag(L33tSpeakType.AllWords)
-					|| (random.GetRandomUInt64() & 1) == 0;
+					|| random.CoinToss();
 
 				if (mutateWord == false)
 				{
@@ -237,13 +237,12 @@ namespace KeePassDiceware
 			{
 				for (int scan = 0; scan < words.Length; ++scan)
 				{
-					bool skipWord = (random.GetRandomUInt64() & 1) == 0;
-					if (skipWord)
+					if (random.CoinToss()) // skip word
 					{
 						continue;
 					}
 
-					int insertAt = random.Range(0, words[scan].Length - 1);
+					int insertAt = random.AtMost(words[scan].Length);
 
 					words[scan] = words[scan].Insert(insertAt, GenerateSalt(sources, random));
 				}
@@ -283,15 +282,10 @@ namespace KeePassDiceware
 						// invalid case: can't insert between a single word.
 						throw new ArgumentOutOfRangeException(nameof(words.Length), "Salt cannot be inserted between a single word.");
 					}
-					// get a random index *between* the first and last word (e.g.: 2nd to 2nd from last)
-					int targetIndex = random.Range(1, words.Length - 2);
-					// choose if the salt should go before or after the word at the selected index
-					bool before = (random.GetRandomUInt64() & 1) == 0;
+					// get a random index word after which to place salt
+					int targetIndex = random.AtMost(words.Length - 2);
 
-					words[targetIndex] = before
-						? $"{singleSalt}{separator}{words[targetIndex]}"
-						: $"{words[targetIndex]}{separator}{singleSalt}";
-
+					words[targetIndex] = $"{words[targetIndex]}{separator}{singleSalt}";
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(salt));
