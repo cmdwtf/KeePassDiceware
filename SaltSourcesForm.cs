@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -10,6 +11,34 @@ namespace KeePassDiceware
 {
 	public partial class SaltSourcesForm : Form
 	{
+		private static bool? _runtimeCanHandleEmoji = null;
+		private static bool RuntimeCanHandleEmoji
+		{
+			get
+			{
+				if (_runtimeCanHandleEmoji.HasValue)
+				{
+					return _runtimeCanHandleEmoji.Value;
+				}
+
+				try
+				{
+					// attempt to render an emoji string to a temporary bitmap.
+					using Bitmap test = new(1, 1);
+					using var g = Graphics.FromImage(test);
+					g.DrawString(SaltSource.Emojis, SystemFonts.DefaultFont, Brushes.Black, 0, 0);
+					_runtimeCanHandleEmoji = true;
+				}
+				catch
+				{
+					// if drawing an emoji fails for any reason, assume this runtime can't handle emoji.
+					_runtimeCanHandleEmoji = false;
+				}
+
+				return _runtimeCanHandleEmoji.Value;
+			}
+		}
+
 		public List<SaltSource> Result { get; private set; } = null;
 		private BindingList<SaltSource> DataSource { get; set; } = null;
 
@@ -167,7 +196,10 @@ namespace KeePassDiceware
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			PopulateSaltSources(SaltSource.DefaultSources);
+			PopulateSaltSources(RuntimeCanHandleEmoji
+				? SaltSource.DefaultSources
+				: SaltSource.DefaultSourcesWithoutEmoji
+			);
 		}
 	}
 }

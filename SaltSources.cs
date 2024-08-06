@@ -9,16 +9,16 @@ namespace KeePassDiceware
 		private const int DefaultSaltMinimumLength = 1;
 		private const int DefaultSaltMaximumLength = 1;
 
-		private const string AllUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		private const string AllLower = "abcdefghijklmnopqrstuvwxyz";
-		private const string AllDigits = "0123456789";
+		internal const string AllUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		internal const string AllLower = "abcdefghijklmnopqrstuvwxyz";
+		internal const string AllDigits = "0123456789";
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private const string AllSymbols = "+-=_@#$%^&;:,.<>/~\\[](){}?!|*'\"";
+		internal const string AllSymbols = "+-=_@#$%^&;:,.<>/~\\[](){}?!|*'\"";
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private const string Emojis = @"😀😃😄😁😆😅";
+		internal const string Emojis = @"😀😃😄😁😆😅";
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
-		private const string Latin1Supplement =
+		internal const string Latin1Supplement =
 				"\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7" +
 				"\u00A8\u00A9\u00AA\u00AB\u00AC\u00AE\u00AF" +
 				"\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7" +
@@ -59,7 +59,7 @@ namespace KeePassDiceware
 				}
 			}
 		}
-		
+
 
 		public SaltSource(string name, string pool, bool enabled = true)
 		{
@@ -74,39 +74,38 @@ namespace KeePassDiceware
 			Enabled = true;
 		}
 
-		public void Enable()
-		{
-			Enabled = true;
-		}
+		public void Enable() => Enabled = true;
 
-		public void Disable()
-		{
-			Enabled = false;
-		}
+		public void Disable() => Enabled = false;
 
-		public char[] GetCharacterPool()
-		{
-			return Pool.ToCharArray();
-		}
+		public char[] GetCharacterPool() => Pool.ToCharArray();
 
 		public object Clone() => MemberwiseClone();
 
+		/// <summary>
+		/// A default set of salt sources.
+		/// </summary>
 		public static List<SaltSource> DefaultSources
 		{
 			get
 			{
-				List<SaltSource> sources = new();
-
-				sources.Add(new SaltSource("Uppercase", AllUpper));
-				sources.Add(new SaltSource("Lowercase", AllLower));
-				sources.Add(new SaltSource("Digits", AllDigits));
-				sources.Add(new SaltSource("Symbols", AllSymbols));
-				sources.Add(new SaltSource("Emoji", Emojis, enabled: false));
-				sources.Add(new SaltSource("Latin 1 Supplement", Latin1Supplement));
+				List<SaltSource> sources =
+				[
+					new SaltSource("Uppercase", AllUpper),
+					new SaltSource("Lowercase", AllLower),
+					new SaltSource("Digits", AllDigits),
+					new SaltSource("Symbols", AllSymbols),
+					new SaltSource("Emoji", Emojis, enabled: false),
+					new SaltSource("Latin 1 Supplement", Latin1Supplement),
+				];
 
 				return sources;
 			}
 		}
 
+		/// <summary>
+		/// As <see cref="DefaultSources"/>, but without the "Emoji" source."/>
+		/// </summary>
+		public static List<SaltSource> DefaultSourcesWithoutEmoji => DefaultSources.FindAll(s => s.Name != "Emoji");
 	}
 }
