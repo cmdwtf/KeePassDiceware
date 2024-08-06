@@ -35,10 +35,7 @@ namespace KeePassDiceware
 		public L33tSpeakType L33tSpeak { get; set; } = L33tSpeakType.None;
 		public SaltType Salt { get; set; } = SaltType.None;
 		public List<SaltSource> SaltSources { get; set; } = new();
-		public WordLists WordLists { get; set; } =
-			WordLists.Diceware
-			| WordLists.EffLarge
-			| WordLists.Google;
+		public List<WordList> WordLists { get; set; } = new();
 		public AdvancedStrategy AdvancedStrategy { get; set; } = AdvancedStrategy.Drop;
 
 		public Options() { }
@@ -47,7 +44,8 @@ namespace KeePassDiceware
 		{
 			return new()
 			{
-				SaltSources = SaltSource.DefaultSources,
+				SaltSources = SaltSource.Default,
+				WordLists = WordList.Default,
 			};
 		}
 
@@ -74,7 +72,7 @@ namespace KeePassDiceware
 				string[] saltSourceNames = e.Element.InnerText.Split(new char[] { ' ' });
 
 				// start from the defaults
-				opts.SaltSources = SaltSource.DefaultSources;
+				opts.SaltSources = SaltSource.Default;
 
 				foreach (SaltSource ss in opts.SaltSources)
 				{

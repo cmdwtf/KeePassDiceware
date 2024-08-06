@@ -33,6 +33,7 @@ namespace KeePassDiceware
 				"\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
 		public string Name { get; set; }
+
 		[Browsable(false)]
 		public string Key => Name.Replace(" ", string.Empty);
 		public string Pool { get; set; }
@@ -91,20 +92,20 @@ namespace KeePassDiceware
 
 		public object Clone() => MemberwiseClone();
 
-		public static List<SaltSource> DefaultSources
+		public static List<SaltSource> Default
 		{
 			get
 			{
-				List<SaltSource> sources = new();
+				List<SaltSource> defaultList = new();
 
-				sources.Add(new SaltSource("Uppercase", AllUpper));
-				sources.Add(new SaltSource("Lowercase", AllLower));
-				sources.Add(new SaltSource("Digits", AllDigits));
-				sources.Add(new SaltSource("Symbols", AllSymbols));
-				sources.Add(new SaltSource("Emoji", Emojis, enabled: false));
-				sources.Add(new SaltSource("Latin 1 Supplement", Latin1Supplement));
+				defaultList.Add(new SaltSource("Uppercase", AllUpper));
+				defaultList.Add(new SaltSource("Lowercase", AllLower));
+				defaultList.Add(new SaltSource("Digits", AllDigits));
+				defaultList.Add(new SaltSource("Symbols", AllSymbols));
+				defaultList.Add(new SaltSource("Emoji", Emojis, enabled: false));
+				defaultList.Add(new SaltSource("Latin 1 Supplement", Latin1Supplement));
 
-				return sources;
+				return defaultList;
 			}
 		}
 

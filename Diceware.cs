@@ -84,7 +84,8 @@ namespace KeePassDiceware
 			{ 'Z', "2" },
 		};
 
-		private static readonly Dictionary<WordLists, string[]> LoadedLists = new();
+		// TODO clear when a enabled wordlists change (mainly when a new list is added with existing name)
+		private static readonly Dictionary<WordList, string[]> LoadedLists = new();
 
 		public static string Generate(Options options, PwProfile profile, CryptoRandomStream random)
 		{
@@ -355,28 +356,31 @@ namespace KeePassDiceware
 			return result?.ToString() ?? string.Empty;
 		}
 
-		public static IEnumerable<string> GetWordList(WordLists lists)
+		public static IEnumerable<string> GetWordList(List<WordList> lists)
 		{
 			var selectedWordlists = new List<string[]>();
 
-			foreach (WordLists list in lists.GetFlags())
+			foreach (WordList list in lists.Where(wl => wl.Enabled))
 			{
-				// none isn't a real list.
-				if (list == WordLists.None)
-				{
-					continue;
-				}
-
 				if (LoadedLists.ContainsKey(list))
 				{
 					selectedWordlists.Add(LoadedLists[list]);
 				}
 				else
 				{
-					string[] loadedList = ReadEmbeddedResource($"{list}{WordListFileExtension}").ToArray();
-					LoadedLists.Add(list, loadedList);
+					// TODO error checking when invalid value
+					string[] loadedList;
+					if (list.Embeded)
+					{
+						loadedList = ReadEmbeddedResource(list.Path).ToArray();
+					} else // user provided
+					{
+						loadedList = ReadExternalResource(list.Path).ToArray();
+					}
 
 					// cache it for re-use.
+					LoadedLists.Add(list, loadedList);
+
 					selectedWordlists.Add(loadedList);
 				}
 			}
@@ -407,6 +411,12 @@ namespace KeePassDiceware
 			{
 				yield return line;
 			}
+		}
+
+		public static IEnumerable<string> ReadExternalResource(string resourceName, Encoding encoding = null)
+		{
+			// TODO
+			yield return "";
 		}
 	}
 }

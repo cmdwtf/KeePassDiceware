@@ -17,64 +17,107 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace KeePassDiceware
 {
-	[Flags]
-	public enum WordLists
+	public class WordList : ICloneable
 	{
+		public enum CategoryEnum
+		{
+			Standard,
+			Fandom,
+			Languages,
+			User
+		}
+
+		public WordList()
+		{
+			Enabled = false;
+		}
+
+		private WordList(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User, bool embeded = false)
+		{
+			this.Name = name;
+			this.Path = path;
+			this.Category = category;
+			this.Enabled = enabled;
+			this.Embeded = embeded;
+		}
+
+		public object Clone() => MemberwiseClone();
+
+		public bool Enabled { get; set; }
+
+		public string Name { get; set; }
+
+		// Move to DataContractSerializer? https://stackoverflow.com/questions/802711/serializing-private-member-data
+		//public string Path { get; private set; }
+		public string Path { get; set; }
+
+		//public CategoryEnum Category { get; private set; }
+		public CategoryEnum Category { get; set; }
+
+		//public bool Embeded { get; private set; } = false;
 		[Browsable(false)]
-		None = 0x0000_0000,
+		public bool Embeded { get; set; } = false;
 
-		// standard
-		[Category("Standard")]
-		Beale = 0x0000_0001,
-		[Category("Standard"), Description("Diceware (Arnold G. Reinhold's Original)")]
-		Diceware = 0x0000_0002,
-		[Category("Standard"), Description("EFF Large")]
-		EffLarge = 0x0000_0004,
-		[Category("Standard"), Description("EFF Short (v1.0)")]
-		EffShort1point0 = 0x0000_0008,
-		[Category("Standard"), Description("EFF Short (v2.0 — More memorable, unique prefix)")]
-		EffShort2point0 = 0x0000_0010,
-		[Category("Standard"), Description("Google — U.S. English, no swears")]
-		Google = 0x0000_0020,
+		public override int GetHashCode()
+		{
+			if (Name == null || Path == null)
+			{
+				return 0;
+			}
+			return Name.GetHashCode() ^ Path.GetHashCode();
+		}
 
-		// Fandom
-		[Category("Fandom"), Description("Game of Thrones (EFF Fandom)")]
-		GameOfThrones = 0x0000_0100,
-		[Category("Fandom"), Description("Harry Potter (EFF Fandom)")]
-		HarryPotter = 0x0000_0200,
-		[Category("Fandom"), Description("Star Trek (EFF Fandom)")]
-		StarTrek = 0x0000_0400,
-		[Category("Fandom"), Description("Star Wars (EFF Fandom)")]
-		StarWars = 0x0000_0800,
+		public override bool Equals(object obj)
+		{
+			return obj is WordList other && other.Name == this.Name && other.Path == this.Path && other.Embeded == this.Embeded;
+		}
 
-		// Languages
-		[Category("Languages")]
-		Catalan = 0x0001_0000,
-		[Category("Languages")]
-		Dutch = 0x0002_0000,
-		[Category("Languages")]
-		Finnish = 0x0004_0000,
-		[Category("Languages")]
-		French = 0x0008_0000,
-		[Category("Languages")]
-		German = 0x0010_0000,
-		[Category("Languages")]
-		Icelandic = 0x0020_0000,
-		[Category("Languages")]
-		Italian = 0x0040_0000,
-		[Category("Languages")]
-		Japanese = 0x0080_0000,
-		[Category("Languages")]
-		Norwegian = 0x0100_0000,
-		[Category("Languages")]
-		Polish = 0x0200_0000,
-		[Category("Languages")]
-		Swedish = 0x0400_0000,
-		[Category("Languages")]
-		Spanish = 0x0800_0000,
+	public static List<WordList> Default
+		{
+			get
+			{
+				List<WordList> defaultList = new();
+
+				// Standard
+				defaultList.Add(new WordList("Beale", "Beale.txt", false, CategoryEnum.Standard, true));
+				defaultList.Add(new WordList("Diceware (Arnold G. Reinhold's Original)", "Diceware.txt", true, CategoryEnum.Standard, true));
+				defaultList.Add(new WordList("EFF Large", "EffLarge.txt", true, CategoryEnum.Standard, true));
+				defaultList.Add(new WordList("EFF Short (v1.0)", "EffShort1point0.txt", false, CategoryEnum.Standard, true));
+				defaultList.Add(new WordList("EFF Short (v2.0 — More memorable, unique prefix)", "EffShort2point0.txt", false, CategoryEnum.Standard, true));
+				defaultList.Add(new WordList("Google — U.S. English, no swears", "Google.txt", true, CategoryEnum.Standard, true));
+
+				// Fandom
+				defaultList.Add(new WordList("Game of Thrones (EFF Fandom)", "GameOfThrones.txt", false, CategoryEnum.Fandom, true));
+				defaultList.Add(new WordList("Harry Potter (EFF Fandom)", "HarryPotter.txt", false, CategoryEnum.Fandom, true));
+				defaultList.Add(new WordList("Star Trek (EFF Fandom)", "StarTrek.txt", false, CategoryEnum.Fandom, true));
+				defaultList.Add(new WordList("Star Wars (EFF Fandom)", "StarWars.txt", false, CategoryEnum.Fandom, true));
+
+				// Languages
+				defaultList.Add(new WordList("Catalan", "Catalan.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Dutch", "Dutch.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Finnish", "Finnish.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("French", "French.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("German", "German.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Icelandic", "Icelandic.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Italian", "Italian.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Japanese", "Japanese.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Norwegian", "Norwegian.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Polish", "Polish.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Swedish", "Swedish.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordList("Spanish", "Spanish.txt", false, CategoryEnum.Languages, true));
+
+				return defaultList;
+			}
+		}
 	}
+
 }

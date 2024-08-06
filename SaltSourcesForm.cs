@@ -167,7 +167,7 @@ namespace KeePassDiceware
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			PopulateSaltSources(SaltSource.DefaultSources);
+			PopulateSaltSources(SaltSource.Default);
 		}
 	}
 }
