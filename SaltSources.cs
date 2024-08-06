@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace KeePassDiceware
 {
@@ -32,6 +33,22 @@ namespace KeePassDiceware
 				"\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7" +
 				"\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 
+		private static bool? _runtimeCanHandleEmoji = null;
+		internal static bool RuntimeCanHandleEmoji
+		{
+			get
+			{
+				if (_runtimeCanHandleEmoji.HasValue)
+				{
+					return _runtimeCanHandleEmoji.Value;
+				}
+
+				_runtimeCanHandleEmoji = TestRuntimeRenderSupport(Emojis);
+
+				return _runtimeCanHandleEmoji.Value;
+			}
+		}
+
 		public string Name { get; set; }
 		[Browsable(false)]
 		public string Key => Name.Replace(" ", string.Empty);
@@ -60,6 +77,21 @@ namespace KeePassDiceware
 			}
 		}
 
+		internal bool? _canRender = null;
+		public bool CanRender
+		{
+			get
+			{
+				if (_canRender.HasValue)
+				{
+					return _canRender.Value;
+				}
+
+				_canRender = TestRuntimeRenderSupport(Pool);
+
+				return _canRender.Value;
+			}
+		}
 
 		public SaltSource(string name, string pool, bool enabled = true)
 		{
@@ -104,8 +136,30 @@ namespace KeePassDiceware
 		}
 
 		/// <summary>
-		/// As <see cref="DefaultSources"/>, but without the "Emoji" source."/>
+		/// As <see cref="DefaultSources"/>, but without the "Emoji" source.
 		/// </summary>
 		public static List<SaltSource> DefaultSourcesWithoutEmoji => DefaultSources.FindAll(s => s.Name != "Emoji");
+
+		/// <summary>
+		/// Attempts to render the given string with the graphics API.
+		/// </summary>
+		/// <param name="testString">The string to attempt to render</param>
+		/// <returns>True if the render was successful, otherwise false</returns>
+		internal static bool TestRuntimeRenderSupport(string testString)
+		{
+			try
+			{
+				// attempt to render the given string to a temporary bitmap.
+				using Bitmap test = new(1, 1);
+				using var g = Graphics.FromImage(test);
+				g.DrawString(testString, SystemFonts.DefaultFont, Brushes.Black, 0, 0);
+				return true;
+			}
+			catch
+			{
+				// if drawing fails for any reason, assume this runtime can't handle characters in that string
+				return false;
+			}
+		}
 	}
 }

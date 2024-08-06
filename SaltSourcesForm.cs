@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -11,34 +10,6 @@ namespace KeePassDiceware
 {
 	public partial class SaltSourcesForm : Form
 	{
-		private static bool? _runtimeCanHandleEmoji = null;
-		private static bool RuntimeCanHandleEmoji
-		{
-			get
-			{
-				if (_runtimeCanHandleEmoji.HasValue)
-				{
-					return _runtimeCanHandleEmoji.Value;
-				}
-
-				try
-				{
-					// attempt to render an emoji string to a temporary bitmap.
-					using Bitmap test = new(1, 1);
-					using var g = Graphics.FromImage(test);
-					g.DrawString(SaltSource.Emojis, SystemFonts.DefaultFont, Brushes.Black, 0, 0);
-					_runtimeCanHandleEmoji = true;
-				}
-				catch
-				{
-					// if drawing an emoji fails for any reason, assume this runtime can't handle emoji.
-					_runtimeCanHandleEmoji = false;
-				}
-
-				return _runtimeCanHandleEmoji.Value;
-			}
-		}
-
 		public List<SaltSource> Result { get; private set; } = null;
 		private BindingList<SaltSource> DataSource { get; set; } = null;
 
@@ -99,6 +70,20 @@ namespace KeePassDiceware
 		internal void PopulateSaltSources(List<SaltSource> saltSources)
 		{
 			_pendingErrors.Clear();
+
+			int totalCount = saltSources.Count;
+
+			saltSources = saltSources.Where(ss => ss.CanRender).ToList();
+
+			int removed = totalCount - saltSources.Count;
+
+			if (removed > 0)
+			{
+				string removedS = removed == 1 ? string.Empty : "s";
+				string removedHelpingVerb = removed == 1 ? "was" : "were";
+				MessageBox.Show(this, $"{removed} salt source{removedS} {removedHelpingVerb} removed because they are not supported by the current runtime.",
+					$"Unsupported Source{removedS} Removed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
 
 			DataSource = new(saltSources.ConvertAll(ss => ss.Clone() as SaltSource))
 			{
@@ -196,7 +181,7 @@ namespace KeePassDiceware
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			PopulateSaltSources(RuntimeCanHandleEmoji
+			PopulateSaltSources(SaltSource.RuntimeCanHandleEmoji
 				? SaltSource.DefaultSources
 				: SaltSource.DefaultSourcesWithoutEmoji
 			);
