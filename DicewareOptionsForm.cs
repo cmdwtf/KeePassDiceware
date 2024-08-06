@@ -51,7 +51,7 @@ namespace KeePassDiceware
 			_saltSources.Clear();
 			activeSaltSourcesLabel.Text = string.Empty;
 
-			wordListsListView.Columns.Add("Word List", -1);
+			wordListsListView.Columns.Add("Word List");
 
 			ListViewGroup[] wordListCategories = EnumTools.GetCategories<WordLists>()
 				.Select(c => new ListViewGroup(c, c))
@@ -65,6 +65,8 @@ namespace KeePassDiceware
 				.ToArray();
 
 			wordListsListView.Items.AddRange(wordLists);
+
+			wordListsListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
 		}
 
 		protected override void OnLoad(EventArgs e)
