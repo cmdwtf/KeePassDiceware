@@ -49,6 +49,14 @@ namespace KeePassDiceware
 			}
 		}
 
+		private static readonly StringFormat RuntimeEmojiTestStringFormat = new()
+		{
+			Alignment = StringAlignment.Near, // typically provided from the listviewitem's column alignment
+			LineAlignment = StringAlignment.Center,
+			FormatFlags = StringFormatFlags.NoWrap,
+			Trimming = StringTrimming.EllipsisCharacter
+		};
+
 		public string Name { get; set; }
 		[Browsable(false)]
 		public string Key => Name.Replace(" ", string.Empty);
@@ -152,7 +160,11 @@ namespace KeePassDiceware
 				// attempt to render the given string to a temporary bitmap.
 				using Bitmap test = new(1, 1);
 				using var g = Graphics.FromImage(test);
-				g.DrawString(testString, SystemFonts.DefaultFont, Brushes.Black, 0, 0);
+				g.DrawString(testString, SystemFonts.DefaultFont, Brushes.Black, 0, 0, RuntimeEmojiTestStringFormat);
+
+				// call fill rectangle as this is where the exception was thrown in the example from:
+				// https://github.com/mono/mono/issues/18079
+				g.FillRectangle(Brushes.Black, 0, 0, 1, 1);
 				return true;
 			}
 			catch
