@@ -33,18 +33,19 @@ namespace KeePassDiceware
             this.RestoreDefaultsButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
+            this.AddNewButton = new System.Windows.Forms.Button();
+            this.wordListEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.wordListName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.wordListPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.wordListCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.wordListBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.enabledDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.categoryDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.WordListRemove = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.WordListDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wordListBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // WordListDataGridView
             // 
+            this.WordListDataGridView.AllowUserToAddRows = false;
             this.WordListDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -52,11 +53,10 @@ namespace KeePassDiceware
             this.WordListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.WordListDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.WordListDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.enabledDataGridViewCheckBoxColumn,
-            this.nameDataGridViewTextBoxColumn,
-            this.pathDataGridViewTextBoxColumn,
-            this.categoryDataGridViewTextBoxColumn,
-            this.WordListRemove});
+            this.wordListEnabled,
+            this.wordListName,
+            this.wordListPath,
+            this.wordListCategory});
             this.WordListDataGridView.DataSource = this.wordListBindingSource;
             this.WordListDataGridView.Location = new System.Drawing.Point(18, 18);
             this.WordListDataGridView.Margin = new System.Windows.Forms.Padding(4);
@@ -65,10 +65,14 @@ namespace KeePassDiceware
             this.WordListDataGridView.RowTemplate.Height = 28;
             this.WordListDataGridView.Size = new System.Drawing.Size(956, 417);
             this.WordListDataGridView.TabIndex = 0;
+            this.WordListDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.WordListDataGridView_CellDoubleClick);
+            this.WordListDataGridView.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.WordListDataGridView_RowValidated);
+            this.WordListDataGridView.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.WordListDataGridView_RowValidating);
             // 
             // RestoreDefaultsButton
             // 
             this.RestoreDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RestoreDefaultsButton.CausesValidation = false;
             this.RestoreDefaultsButton.Location = new System.Drawing.Point(18, 444);
             this.RestoreDefaultsButton.Margin = new System.Windows.Forms.Padding(4);
             this.RestoreDefaultsButton.Name = "RestoreDefaultsButton";
@@ -81,6 +85,7 @@ namespace KeePassDiceware
             // cancelButton
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.CausesValidation = false;
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelButton.Location = new System.Drawing.Point(740, 444);
             this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
@@ -103,59 +108,63 @@ namespace KeePassDiceware
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
+            // AddNewButton
+            // 
+            this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddNewButton.CausesValidation = true;
+            this.AddNewButton.Location = new System.Drawing.Point(238, 444);
+            this.AddNewButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddNewButton.Name = "AddNewButton";
+            this.AddNewButton.Size = new System.Drawing.Size(112, 34);
+            this.AddNewButton.TabIndex = 5;
+            this.AddNewButton.Text = "&Add";
+            this.AddNewButton.UseVisualStyleBackColor = true;
+            this.AddNewButton.Click += new System.EventHandler(this.AddNewButton_Click);
+            // 
+            // wordListEnabled
+            // 
+            this.wordListEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.wordListEnabled.DataPropertyName = "Enabled";
+            this.wordListEnabled.FillWeight = 1F;
+            this.wordListEnabled.HeaderText = "Enabled";
+            this.wordListEnabled.MinimumWidth = 40;
+            this.wordListEnabled.Name = "wordListEnabled";
+            this.wordListEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.wordListEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.wordListEnabled.Width = 75;
+            // 
+            // wordListName
+            // 
+            this.wordListName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.wordListName.DataPropertyName = "Name";
+            this.wordListName.FillWeight = 80F;
+            this.wordListName.HeaderText = "Name";
+            this.wordListName.MinimumWidth = 20;
+            this.wordListName.Name = "wordListName";
+            this.wordListName.Width = 250;
+            // 
+            // wordListPath
+            // 
+            this.wordListPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.wordListPath.DataPropertyName = "Path";
+            this.wordListPath.FillWeight = 200F;
+            this.wordListPath.HeaderText = "Path";
+            this.wordListPath.MinimumWidth = 10;
+            this.wordListPath.Name = "wordListPath";
+            this.wordListPath.ReadOnly = true;
+            // 
+            // wordListCategory
+            // 
+            this.wordListCategory.DataPropertyName = "Category";
+            this.wordListCategory.FillWeight = 50F;
+            this.wordListCategory.HeaderText = "Category";
+            this.wordListCategory.MinimumWidth = 10;
+            this.wordListCategory.Name = "wordListCategory";
+            this.wordListCategory.ReadOnly = true;
+            // 
             // wordListBindingSource
             // 
             this.wordListBindingSource.DataSource = typeof(KeePassDiceware.WordList);
-            // 
-            // enabledDataGridViewCheckBoxColumn
-            // 
-            this.enabledDataGridViewCheckBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.enabledDataGridViewCheckBoxColumn.DataPropertyName = "Enabled";
-            this.enabledDataGridViewCheckBoxColumn.FillWeight = 1F;
-            this.enabledDataGridViewCheckBoxColumn.HeaderText = "Enabled";
-            this.enabledDataGridViewCheckBoxColumn.MinimumWidth = 40;
-            this.enabledDataGridViewCheckBoxColumn.Name = "enabledDataGridViewCheckBoxColumn";
-            this.enabledDataGridViewCheckBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.enabledDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.enabledDataGridViewCheckBoxColumn.Width = 75;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.FillWeight = 80F;
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.MinimumWidth = 20;
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.Width = 250;
-            // 
-            // pathDataGridViewTextBoxColumn
-            // 
-            this.pathDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
-            this.pathDataGridViewTextBoxColumn.FillWeight = 200F;
-            this.pathDataGridViewTextBoxColumn.HeaderText = "Path";
-            this.pathDataGridViewTextBoxColumn.MinimumWidth = 10;
-            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
-            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // categoryDataGridViewTextBoxColumn
-            // 
-            this.categoryDataGridViewTextBoxColumn.DataPropertyName = "Category";
-            this.categoryDataGridViewTextBoxColumn.FillWeight = 50F;
-            this.categoryDataGridViewTextBoxColumn.HeaderText = "Category";
-            this.categoryDataGridViewTextBoxColumn.MinimumWidth = 10;
-            this.categoryDataGridViewTextBoxColumn.Name = "categoryDataGridViewTextBoxColumn";
-            this.categoryDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // WordListRemove
-            // 
-            this.WordListRemove.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.WordListRemove.HeaderText = "Remove";
-            this.WordListRemove.MinimumWidth = 75;
-            this.WordListRemove.Name = "WordListRemove";
-            this.WordListRemove.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.WordListRemove.Width = 75;
             // 
             // WordListsForm
             // 
@@ -164,6 +173,7 @@ namespace KeePassDiceware
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(992, 496);
+            this.Controls.Add(this.AddNewButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.RestoreDefaultsButton);
@@ -189,10 +199,10 @@ namespace KeePassDiceware
 		private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.BindingSource wordListBindingSource;
-		private System.Windows.Forms.DataGridViewCheckBoxColumn enabledDataGridViewCheckBoxColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn pathDataGridViewTextBoxColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn categoryDataGridViewTextBoxColumn;
-		private System.Windows.Forms.DataGridViewButtonColumn WordListRemove;
+		private System.Windows.Forms.DataGridViewCheckBoxColumn wordListEnabled;
+		private System.Windows.Forms.DataGridViewTextBoxColumn wordListName;
+		private System.Windows.Forms.DataGridViewTextBoxColumn wordListPath;
+		private System.Windows.Forms.DataGridViewTextBoxColumn wordListCategory;
+		private System.Windows.Forms.Button AddNewButton;
 	}
 }

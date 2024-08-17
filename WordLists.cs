@@ -26,8 +26,14 @@ using System.Xml.Linq;
 
 namespace KeePassDiceware
 {
+	/// <summary>
+	/// Class <c>WordList</c> represents a wordlist/dictionary.
+	/// </summary>
 	public class WordList : ICloneable
 	{
+		/// <summary>
+		/// Enum <c>CategoryEnum</c> contains possible categories of wordlists.
+		/// </summary>
 		public enum CategoryEnum
 		{
 			Standard,
@@ -36,11 +42,33 @@ namespace KeePassDiceware
 			User
 		}
 
+		/// <summary>
+		/// Creates a default wordlist.
+		/// </summary>
 		public WordList()
 		{
-			Enabled = false;
 		}
 
+		/// <summary>
+		/// Creates enabled wordlist with <paramref name="name"/> and <paramref name="path"/>.
+		/// </summary>
+		/// <param name="name"> name of wordlist.</param>
+		/// <param name="path"> path to wordlist</param>
+		public WordList(string name, string path)
+		{
+			this.Name = name;
+			this.Path = path;
+			this.Enabled = true;
+		}
+
+		/// <summary>
+		/// Creates wordlist with all setters.
+		/// </summary>
+		/// <param name="name"> name of wordlist.</param>
+		/// <param name="path"> path to wordlist</param>
+		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
+		/// <param name="category"> category of wordlist (default: User)</param>
+		/// <param name="embeded"> true of wordlist is embeded (default: false)</param>
 		private WordList(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User, bool embeded = false)
 		{
 			this.Name = name;
@@ -50,23 +78,60 @@ namespace KeePassDiceware
 			this.Embeded = embeded;
 		}
 
+		/// <summary>
+		/// Creates a deep copy of wordlist
+		/// </summary>
+		/// <returns>Deep of wordlist</returns>
 		public object Clone() => MemberwiseClone();
 
-		public bool Enabled { get; set; }
+		/// <summary>
+		/// true if wordlist is enabled and should be used to generate passwords.
+		/// </summary>
+		public bool Enabled { get; set; } = false;
 
-		public string Name { get; set; }
+		/// <summary>
+		/// Name of wordlist
+		/// </summary>
+		public string Name { get; set; } = "New Wordlist";
+
+		/// <summary>
+		/// Key of wordlist. Is a simplified name.
+		/// </summary>
+		public string Key => Name.Replace(" ", string.Empty);
 
 		// Move to DataContractSerializer? https://stackoverflow.com/questions/802711/serializing-private-member-data
 		//public string Path { get; private set; }
-		public string Path { get; set; }
+		/// <summary>
+		/// Path to wordlist
+		/// </summary>
+		private string _path;
+
+		/// <summary>
+		/// Path to wordlist. For embeded wordlist it consists of "(embeded)\Filename"
+		/// </summary>
+		public string Path {
+			get => Embeded ? "(embeded)\\" + _path : _path;
+			set => _path = value;
+		}
+
 
 		//public CategoryEnum Category { get; private set; }
-		public CategoryEnum Category { get; set; }
+		/// <summary>
+		/// Category of wordlist.
+		/// </summary>
+		public CategoryEnum Category { get; set; } = CategoryEnum.User;
 
 		//public bool Embeded { get; private set; } = false;
+		/// <summary>
+		/// true if wordlist is embeded and compiled into plugin.
+		/// </summary>
 		[Browsable(false)]
 		public bool Embeded { get; set; } = false;
 
+		/// <summary>
+		/// Calculates a hash of current wordlist.
+		/// </summary>
+		/// <returns>Hash of wordlist consisting of name and path.</returns>
 		public override int GetHashCode()
 		{
 			if (Name == null || Path == null)
@@ -76,12 +141,20 @@ namespace KeePassDiceware
 			return Name.GetHashCode() ^ Path.GetHashCode();
 		}
 
+		/// <summary>
+		/// Checks if two wordlists are equal.
+		/// </summary>
+		/// <param name="obj"> Second wordlist to compare to.</param>
+		/// <returns>true if both are wordlists and name, path and embeded match.</returns>
 		public override bool Equals(object obj)
 		{
 			return obj is WordList other && other.Name == this.Name && other.Path == this.Path && other.Embeded == this.Embeded;
 		}
 
-	public static List<WordList> Default
+		/// <summary>
+		/// Default wordlist.
+		/// </summary>
+		public static List<WordList> Default
 		{
 			get
 			{
