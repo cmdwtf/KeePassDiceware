@@ -30,15 +30,15 @@ namespace KeePassDiceware
 		{
             this.components = new System.ComponentModel.Container();
             this.WordListDataGridView = new System.Windows.Forms.DataGridView();
+            this.wordListEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.wordListName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.wordListPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.wordListCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.wordListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.RestoreDefaultsButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.AddNewButton = new System.Windows.Forms.Button();
-            this.wordListEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.wordListName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.wordListPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.wordListCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.WordListDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wordListBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -66,8 +66,50 @@ namespace KeePassDiceware
             this.WordListDataGridView.Size = new System.Drawing.Size(956, 417);
             this.WordListDataGridView.TabIndex = 0;
             this.WordListDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.WordListDataGridView_CellDoubleClick);
+            this.WordListDataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.WordListDataGridView_DataBindingComplete);
             this.WordListDataGridView.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.WordListDataGridView_RowValidated);
             this.WordListDataGridView.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.WordListDataGridView_RowValidating);
+            // 
+            // wordListEnabled
+            // 
+            this.wordListEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.wordListEnabled.DataPropertyName = "Enabled";
+            this.wordListEnabled.FillWeight = 1F;
+            this.wordListEnabled.HeaderText = "Enabled";
+            this.wordListEnabled.MinimumWidth = 40;
+            this.wordListEnabled.Name = "wordListEnabled";
+            this.wordListEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.wordListEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.wordListEnabled.Width = 75;
+            // 
+            // wordListName
+            // 
+            this.wordListName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.wordListName.DataPropertyName = "Name";
+            this.wordListName.FillWeight = 80F;
+            this.wordListName.HeaderText = "Name";
+            this.wordListName.MinimumWidth = 20;
+            this.wordListName.Name = "wordListName";
+            this.wordListName.Width = 250;
+            // 
+            // wordListPath
+            // 
+            this.wordListPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.wordListPath.DataPropertyName = "Path";
+            this.wordListPath.FillWeight = 200F;
+            this.wordListPath.HeaderText = "Path";
+            this.wordListPath.MinimumWidth = 10;
+            this.wordListPath.Name = "wordListPath";
+            this.wordListPath.ReadOnly = true;
+            // 
+            // wordListCategory
+            // 
+            this.wordListCategory.DataPropertyName = "Category";
+            this.wordListCategory.FillWeight = 50F;
+            this.wordListCategory.HeaderText = "Category";
+            this.wordListCategory.MinimumWidth = 10;
+            this.wordListCategory.Name = "wordListCategory";
+            this.wordListCategory.ReadOnly = true;
             // 
             // wordListBindingSource
             // 
@@ -123,48 +165,6 @@ namespace KeePassDiceware
             this.AddNewButton.Text = "&Add";
             this.AddNewButton.UseVisualStyleBackColor = true;
             this.AddNewButton.Click += new System.EventHandler(this.AddNewButton_Click);
-            // 
-            // wordListEnabled
-            // 
-            this.wordListEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.wordListEnabled.DataPropertyName = "Enabled";
-            this.wordListEnabled.FillWeight = 1F;
-            this.wordListEnabled.HeaderText = "Enabled";
-            this.wordListEnabled.MinimumWidth = 40;
-            this.wordListEnabled.Name = "wordListEnabled";
-            this.wordListEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.wordListEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.wordListEnabled.Width = 75;
-            // 
-            // wordListName
-            // 
-            this.wordListName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.wordListName.DataPropertyName = "Name";
-            this.wordListName.FillWeight = 80F;
-            this.wordListName.HeaderText = "Name";
-            this.wordListName.MinimumWidth = 20;
-            this.wordListName.Name = "wordListName";
-            this.wordListName.ReadOnly = true;
-            this.wordListName.Width = 250;
-            // 
-            // wordListPath
-            // 
-            this.wordListPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.wordListPath.DataPropertyName = "Path";
-            this.wordListPath.FillWeight = 200F;
-            this.wordListPath.HeaderText = "Path";
-            this.wordListPath.MinimumWidth = 10;
-            this.wordListPath.Name = "wordListPath";
-            this.wordListPath.ReadOnly = true;
-            // 
-            // wordListCategory
-            // 
-            this.wordListCategory.DataPropertyName = "Category";
-            this.wordListCategory.FillWeight = 50F;
-            this.wordListCategory.HeaderText = "Category";
-            this.wordListCategory.MinimumWidth = 10;
-            this.wordListCategory.Name = "wordListCategory";
-            this.wordListCategory.ReadOnly = true;
             // 
             // WordListsForm
             // 

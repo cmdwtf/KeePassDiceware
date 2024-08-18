@@ -59,12 +59,12 @@ namespace KeePassDiceware
 		/// <param name="path"> path to wordlist</param>
 		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
 		/// <param name="category"> category of wordlist (default: User)</param>
-		protected WordList(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User)
+		protected WordList(string name, string path, bool enabled, CategoryEnum category)
 		{
 			this.Name = name;
 			this.Path = path;
-			this.Category = category;
 			this.Enabled = enabled;
+			this.Category = category;
 		}
 
 		/// <summary>
@@ -76,12 +76,12 @@ namespace KeePassDiceware
 		/// <summary>
 		/// true if wordlist is enabled and should be used to generate passwords.
 		/// </summary>
-		public bool Enabled { get; set; } = false;
+		public bool Enabled { get; set; }
 
 		/// <summary>
 		/// Name of wordlist
 		/// </summary>
-		public string Name { get; set; } = "New Wordlist";
+		public string Name { get; set; }
 
 		/// <summary>
 		/// Key of wordlist. Is a simplified name.
@@ -110,7 +110,7 @@ namespace KeePassDiceware
 		/// <summary>
 		/// Category of wordlist.
 		/// </summary>
-		public CategoryEnum Category { get; set; } = CategoryEnum.User;
+		public CategoryEnum Category { get; set; }
 
 		//public bool Embeded { get; private set; } = false;
 		/// <summary>
@@ -185,7 +185,7 @@ namespace KeePassDiceware
 		/// <param name="path"> path to wordlist</param>
 		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
 		/// <param name="category"> category of wordlist (default: User)</param>
-		private WordListEmbeded(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.Standard) : base(name, VirtualPath + path, enabled, category)
+		public WordListEmbeded(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.Standard) : base(name, VirtualPath + path, enabled, category)
 		{
 		}
 
@@ -279,22 +279,13 @@ namespace KeePassDiceware
 		}
 
 		/// <summary>
-		/// Creates enabled  embeded wordlist with <paramref name="name"/> and <paramref name="path"/>.
-		/// </summary>
-		/// <param name="name"> name of wordlist.</param>
-		/// <param name="path"> path to wordlist</param>
-		public WordListCustom(string name, string path) : base(name, path)
-		{
-		}
-
-		/// <summary>
 		/// Creates wordlist with all setters.
 		/// </summary>
 		/// <param name="name"> name of wordlist.</param>
 		/// <param name="path"> path to wordlist</param>
 		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
 		/// <param name="category"> category of wordlist (default: User)</param>
-		private WordListCustom(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User) : base(name, path, enabled, category)
+		public WordListCustom(string name, string path, bool enabled = true, CategoryEnum category = CategoryEnum.User) : base(name, path, enabled, category)
 		{
 		}
 

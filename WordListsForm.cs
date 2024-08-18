@@ -87,21 +87,6 @@ namespace KeePassDiceware
 			_wordListsBindingList = new(Result);
 
 			WordListDataGridView.DataSource = _wordListsBindingList;
-
-			foreach (DataGridViewRow row in WordListDataGridView.Rows)
-			{
-				if (row.DataBoundItem is WordList wl)
-				{
-					if (!wl.ReadOnly)
-					{
-						// Disable modifications of readonly list names.
-						row.Cells["wordListName"].ReadOnly = false;
-						Console.WriteLine($"WordListNames {row.Cells["wordListName"].Value}, {row.Cells["wordListName"].ReadOnly}");
-					}
-				}
-
-			}
-
 		}
 
 		/// <summary>
@@ -267,6 +252,29 @@ namespace KeePassDiceware
 				if (newPath != null && newPath != wl.Path && !IsDuplicateFile(newPath))
 				{
 					wl.Path = newPath;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Runs after a databidning is complete. Sets name cells of embeded resources to ReadOnly.
+		/// </summary>
+		/// <remarks>
+		/// It is necesary to set this ReadOnly property outside of Constructor of this class. Otherwise it is not consistent.
+		/// </remarks>
+		/// <param name="sender"> sender of event</param>
+		/// <param name="e"> eventargs of event</param>
+		private void WordListDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+		{
+			foreach (DataGridViewRow row in WordListDataGridView.Rows)
+			{
+				if (row.DataBoundItem != null && row.DataBoundItem is WordList wl)
+				{
+					if (wl.ReadOnly)
+					{
+						// Disable modifications of readonly list names.
+						row.Cells["wordListName"].ReadOnly = true;
+					}
 				}
 			}
 		}
