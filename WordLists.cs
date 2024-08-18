@@ -21,15 +21,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using System.Xml.Linq;
+using System.Reflection;
+using System.Text;
+using System.Xml.Serialization;
 
 namespace KeePassDiceware
 {
 	/// <summary>
-	/// Class <c>WordList</c> represents a wordlist/dictionary.
+	/// Abstract class <c>WordList</c> represents a wordlist/dictionary.
 	/// </summary>
-	public class WordList : ICloneable
+	[XmlInclude(typeof(WordListCustom))]
+	[XmlInclude(typeof(WordListEmbeded))]
+	public abstract class WordList : ICloneable
 	{
 		/// <summary>
 		/// Enum <c>CategoryEnum</c> contains possible categories of wordlists.
@@ -50,32 +53,18 @@ namespace KeePassDiceware
 		}
 
 		/// <summary>
-		/// Creates enabled wordlist with <paramref name="name"/> and <paramref name="path"/>.
-		/// </summary>
-		/// <param name="name"> name of wordlist.</param>
-		/// <param name="path"> path to wordlist</param>
-		public WordList(string name, string path)
-		{
-			this.Name = name;
-			this.Path = path;
-			this.Enabled = true;
-		}
-
-		/// <summary>
 		/// Creates wordlist with all setters.
 		/// </summary>
 		/// <param name="name"> name of wordlist.</param>
 		/// <param name="path"> path to wordlist</param>
 		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
 		/// <param name="category"> category of wordlist (default: User)</param>
-		/// <param name="embeded"> true of wordlist is embeded (default: false)</param>
-		private WordList(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User, bool embeded = false)
+		protected WordList(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User)
 		{
 			this.Name = name;
 			this.Path = path;
 			this.Category = category;
 			this.Enabled = enabled;
-			this.Embeded = embeded;
 		}
 
 		/// <summary>
@@ -99,23 +88,25 @@ namespace KeePassDiceware
 		/// </summary>
 		public string Key => Name.Replace(" ", string.Empty);
 
-		// Move to DataContractSerializer? https://stackoverflow.com/questions/802711/serializing-private-member-data
-		//public string Path { get; private set; }
 		/// <summary>
-		/// Path to wordlist
+		/// Internal storage of path to wordlist.
 		/// </summary>
 		private string _path;
 
 		/// <summary>
-		/// Path to wordlist. For embeded wordlist it consists of "(embeded)\Filename"
+		/// Path to wordlist
 		/// </summary>
-		public string Path {
-			get => Embeded ? "(embeded)\\" + _path : _path;
-			set => _path = value;
+		public string Path
+		{
+			get => _path;
+			set
+			{
+				// reset cache if path changes
+				_words = null;
+				_path = value;
+			}
 		}
 
-
-		//public CategoryEnum Category { get; private set; }
 		/// <summary>
 		/// Category of wordlist.
 		/// </summary>
@@ -123,36 +114,115 @@ namespace KeePassDiceware
 
 		//public bool Embeded { get; private set; } = false;
 		/// <summary>
-		/// true if wordlist is embeded and compiled into plugin.
+		/// true if wordlist is read only.
 		/// </summary>
 		[Browsable(false)]
-		public bool Embeded { get; set; } = false;
+		public virtual bool ReadOnly { get; } = false;
 
 		/// <summary>
-		/// Calculates a hash of current wordlist.
+		/// A cache of words in wordset
 		/// </summary>
-		/// <returns>Hash of wordlist consisting of name and path.</returns>
-		public override int GetHashCode()
+		[Browsable(false)]
+		protected HashSet<string> _words = null;
+
+		/// <summary>
+		/// Checks that a valid wordlist is configured.
+		/// </summary>
+		[Browsable(false)]
+		public abstract bool Valid { get; }
+
+		/// <summary>
+		/// Gets all words in wordlist
+		/// </summary>
+		/// <returns><c>HashSet</c> of all words in list</returns>
+		public HashSet<string> Get()
 		{
-			if (Name == null || Path == null)
+			if (_words == null)
 			{
-				return 0;
+				CacheWordList();
 			}
-			return Name.GetHashCode() ^ Path.GetHashCode();
+
+			return _words;
 		}
 
 		/// <summary>
-		/// Checks if two wordlists are equal.
+		/// Caches a wordlist into <c>_words</c> property.
 		/// </summary>
-		/// <param name="obj"> Second wordlist to compare to.</param>
-		/// <returns>true if both are wordlists and name, path and embeded match.</returns>
-		public override bool Equals(object obj)
+		protected abstract void CacheWordList();
+	}
+
+	public class WordListEmbeded : WordList
+	{
+		//public bool Embeded { get; private set; } = false;
+		/// <summary>
+		/// true if wordlist is read only.
+		/// </summary>
+		[Browsable(false)]
+		public override bool ReadOnly { get; } = true;
+
+		/// <summary>
+		/// A virtual path for embeded resources shown to user.
+		/// </summary>
+		private static readonly string VirtualPath = "(embeded)\\";
+
+		/// <summary>
+		/// Checks that a valid wordlist is configured.
+		/// </summary>
+		[Browsable(false)]
+		public override bool Valid { get => true; }
+
+		/// <summary>
+		/// Creates a embeded wordlist.
+		/// </summary>
+		public WordListEmbeded() : base()
 		{
-			return obj is WordList other && other.Name == this.Name && other.Path == this.Path && other.Embeded == this.Embeded;
 		}
 
 		/// <summary>
-		/// Default wordlist.
+		/// Creates wordlist with all setters.
+		/// </summary>
+		/// <param name="name"> name of wordlist.</param>
+		/// <param name="path"> path to wordlist</param>
+		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
+		/// <param name="category"> category of wordlist (default: User)</param>
+		private WordListEmbeded(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.Standard) : base(name, VirtualPath + path, enabled, category)
+		{
+		}
+
+		/// <summary>
+		/// Caches a wordlist into <c>_words</c> property. Based on <see cref="https://stackoverflow.com/a/3314213/944605"/>
+		/// </summary>
+		protected override void CacheWordList()
+		{
+			_words = new HashSet<string>();
+
+			var assembly = Assembly.GetAssembly(typeof(Diceware));
+			string resourceName = Path;
+
+			if (resourceName.StartsWith(VirtualPath))
+			{
+				resourceName = resourceName.Remove(0, VirtualPath.Length);
+			}
+
+			// Format: "{Namespace}.{Folder}.{Filename}.{Extension}"
+			if (!resourceName.StartsWith(nameof(KeePassDiceware)))
+			{
+				string[] manifestResourceNames = assembly.GetManifestResourceNames();
+				resourceName = manifestResourceNames.Single(str => str.EndsWith(resourceName));
+			}
+
+			using Stream stream = assembly.GetManifestResourceStream(resourceName);
+			using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+			{
+				while (!reader.EndOfStream)
+				{
+					_words.Add(reader.ReadLine());
+				}
+			}
+		}
+
+		/// <summary>
+		/// Default embeded wordlist.
 		/// </summary>
 		public static List<WordList> Default
 		{
@@ -161,36 +231,87 @@ namespace KeePassDiceware
 				List<WordList> defaultList = new();
 
 				// Standard
-				defaultList.Add(new WordList("Beale", "Beale.txt", false, CategoryEnum.Standard, true));
-				defaultList.Add(new WordList("Diceware (Arnold G. Reinhold's Original)", "Diceware.txt", true, CategoryEnum.Standard, true));
-				defaultList.Add(new WordList("EFF Large", "EffLarge.txt", true, CategoryEnum.Standard, true));
-				defaultList.Add(new WordList("EFF Short (v1.0)", "EffShort1point0.txt", false, CategoryEnum.Standard, true));
-				defaultList.Add(new WordList("EFF Short (v2.0 — More memorable, unique prefix)", "EffShort2point0.txt", false, CategoryEnum.Standard, true));
-				defaultList.Add(new WordList("Google — U.S. English, no swears", "Google.txt", true, CategoryEnum.Standard, true));
+				defaultList.Add(new WordListEmbeded("Beale", "Beale.txt", false, CategoryEnum.Standard));
+				defaultList.Add(new WordListEmbeded("Diceware (Arnold G. Reinhold's Original)", "Diceware.txt", true, CategoryEnum.Standard));
+				defaultList.Add(new WordListEmbeded("EFF Large", "EffLarge.txt", true, CategoryEnum.Standard));
+				defaultList.Add(new WordListEmbeded("EFF Short (v1.0)", "EffShort1point0.txt", false, CategoryEnum.Standard));
+				defaultList.Add(new WordListEmbeded("EFF Short (v2.0 — More memorable, unique prefix)", "EffShort2point0.txt", false, CategoryEnum.Standard));
+				defaultList.Add(new WordListEmbeded("Google — U.S. English, no swears", "Google.txt", true, CategoryEnum.Standard));
 
 				// Fandom
-				defaultList.Add(new WordList("Game of Thrones (EFF Fandom)", "GameOfThrones.txt", false, CategoryEnum.Fandom, true));
-				defaultList.Add(new WordList("Harry Potter (EFF Fandom)", "HarryPotter.txt", false, CategoryEnum.Fandom, true));
-				defaultList.Add(new WordList("Star Trek (EFF Fandom)", "StarTrek.txt", false, CategoryEnum.Fandom, true));
-				defaultList.Add(new WordList("Star Wars (EFF Fandom)", "StarWars.txt", false, CategoryEnum.Fandom, true));
+				defaultList.Add(new WordListEmbeded("Game of Thrones (EFF Fandom)", "GameOfThrones.txt", false, CategoryEnum.Fandom));
+				defaultList.Add(new WordListEmbeded("Harry Potter (EFF Fandom)", "HarryPotter.txt", false, CategoryEnum.Fandom));
+				defaultList.Add(new WordListEmbeded("Star Trek (EFF Fandom)", "StarTrek.txt", false, CategoryEnum.Fandom));
+				defaultList.Add(new WordListEmbeded("Star Wars (EFF Fandom)", "StarWars.txt", false, CategoryEnum.Fandom));
 
 				// Languages
-				defaultList.Add(new WordList("Catalan", "Catalan.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Dutch", "Dutch.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Finnish", "Finnish.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("French", "French.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("German", "German.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Icelandic", "Icelandic.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Italian", "Italian.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Japanese", "Japanese.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Norwegian", "Norwegian.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Polish", "Polish.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Swedish", "Swedish.txt", false, CategoryEnum.Languages, true));
-				defaultList.Add(new WordList("Spanish", "Spanish.txt", false, CategoryEnum.Languages, true));
+				defaultList.Add(new WordListEmbeded("Catalan", "Catalan.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Dutch", "Dutch.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Finnish", "Finnish.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("French", "French.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("German", "German.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Icelandic", "Icelandic.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Italian", "Italian.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Japanese", "Japanese.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Norwegian", "Norwegian.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Polish", "Polish.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Swedish", "Swedish.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Spanish", "Spanish.txt", false, CategoryEnum.Languages));
 
 				return defaultList;
 			}
 		}
 	}
 
+	public class WordListCustom : WordList
+	{
+		/// <summary>
+		/// Checks that a valid wordlist is configured.
+		/// </summary>
+		[Browsable(false)]
+		public override bool Valid { get => File.Exists(Path); }
+
+		/// <summary>
+		/// Creates a embeded wordlist.
+		/// </summary>
+		public WordListCustom() : base()
+		{
+		}
+
+		/// <summary>
+		/// Creates enabled  embeded wordlist with <paramref name="name"/> and <paramref name="path"/>.
+		/// </summary>
+		/// <param name="name"> name of wordlist.</param>
+		/// <param name="path"> path to wordlist</param>
+		public WordListCustom(string name, string path) : base(name, path)
+		{
+		}
+
+		/// <summary>
+		/// Creates wordlist with all setters.
+		/// </summary>
+		/// <param name="name"> name of wordlist.</param>
+		/// <param name="path"> path to wordlist</param>
+		/// <param name="enabled"> true of wordlist is enabled (default: false)</param>
+		/// <param name="category"> category of wordlist (default: User)</param>
+		private WordListCustom(string name, string path, bool enabled = false, CategoryEnum category = CategoryEnum.User) : base(name, path, enabled, category)
+		{
+		}
+
+		/// <summary>
+		/// Caches a wordlist into <c>_words</c> property.
+		/// </summary>
+		protected override void CacheWordList()
+		{
+			_words = new HashSet<string>();
+
+			using (StreamReader reader = new StreamReader(Path, Encoding.UTF8))
+			{
+				while (!reader.EndOfStream)
+				{
+					_words.Add(reader.ReadLine());
+				}
+			}
+		}
+	}
 }

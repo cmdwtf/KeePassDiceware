@@ -45,7 +45,7 @@ namespace KeePassDiceware
 			return new()
 			{
 				SaltSources = SaltSource.Default,
-				WordLists = WordList.Default,
+				WordLists = WordListEmbeded.Default,
 			};
 		}
 

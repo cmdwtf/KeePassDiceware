@@ -30,6 +30,7 @@ namespace KeePassDiceware
 		{
             this.components = new System.ComponentModel.Container();
             this.WordListDataGridView = new System.Windows.Forms.DataGridView();
+            this.wordListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.RestoreDefaultsButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
@@ -38,7 +39,6 @@ namespace KeePassDiceware
             this.wordListName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.wordListPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.wordListCategory = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.wordListBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.WordListDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wordListBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -68,6 +68,10 @@ namespace KeePassDiceware
             this.WordListDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.WordListDataGridView_CellDoubleClick);
             this.WordListDataGridView.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.WordListDataGridView_RowValidated);
             this.WordListDataGridView.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.WordListDataGridView_RowValidating);
+            // 
+            // wordListBindingSource
+            // 
+            this.wordListBindingSource.DataSource = typeof(KeePassDiceware.WordList);
             // 
             // RestoreDefaultsButton
             // 
@@ -111,7 +115,6 @@ namespace KeePassDiceware
             // AddNewButton
             // 
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddNewButton.CausesValidation = true;
             this.AddNewButton.Location = new System.Drawing.Point(238, 444);
             this.AddNewButton.Margin = new System.Windows.Forms.Padding(4);
             this.AddNewButton.Name = "AddNewButton";
@@ -141,6 +144,7 @@ namespace KeePassDiceware
             this.wordListName.HeaderText = "Name";
             this.wordListName.MinimumWidth = 20;
             this.wordListName.Name = "wordListName";
+            this.wordListName.ReadOnly = true;
             this.wordListName.Width = 250;
             // 
             // wordListPath
@@ -161,10 +165,6 @@ namespace KeePassDiceware
             this.wordListCategory.MinimumWidth = 10;
             this.wordListCategory.Name = "wordListCategory";
             this.wordListCategory.ReadOnly = true;
-            // 
-            // wordListBindingSource
-            // 
-            this.wordListBindingSource.DataSource = typeof(KeePassDiceware.WordList);
             // 
             // WordListsForm
             // 
@@ -199,10 +199,10 @@ namespace KeePassDiceware
 		private System.Windows.Forms.Button cancelButton;
 		private System.Windows.Forms.Button okButton;
 		private System.Windows.Forms.BindingSource wordListBindingSource;
+		private System.Windows.Forms.Button AddNewButton;
 		private System.Windows.Forms.DataGridViewCheckBoxColumn wordListEnabled;
 		private System.Windows.Forms.DataGridViewTextBoxColumn wordListName;
 		private System.Windows.Forms.DataGridViewTextBoxColumn wordListPath;
 		private System.Windows.Forms.DataGridViewTextBoxColumn wordListCategory;
-		private System.Windows.Forms.Button AddNewButton;
 	}
 }

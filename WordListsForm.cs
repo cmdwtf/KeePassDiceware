@@ -92,10 +92,11 @@ namespace KeePassDiceware
 			{
 				if (row.DataBoundItem is WordList wl)
 				{
-					if (wl.Embeded)
+					if (!wl.ReadOnly)
 					{
-						// Disable modifications of embeded list names.
-						row.Cells["wordListName"].ReadOnly = true;
+						// Disable modifications of readonly list names.
+						row.Cells["wordListName"].ReadOnly = false;
+						Console.WriteLine($"WordListNames {row.Cells["wordListName"].Value}, {row.Cells["wordListName"].ReadOnly}");
 					}
 				}
 
@@ -110,7 +111,7 @@ namespace KeePassDiceware
 		/// <param name="e"> eventargs of click event</param>
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			PopulateWordLists(WordList.Default);
+			PopulateWordLists(WordListEmbeded.Default);
 		}
 
 		/// <summary>
@@ -140,16 +141,11 @@ namespace KeePassDiceware
 					row.ErrorText += "This wordlists does not have a path to file set. Please configure the file location.";
 					e.Cancel = true;
 				}
-				else if (!wl.Embeded && !File.Exists(wl.Path))
+				else if (!wl.Valid)
 				{
 					row.ErrorText += "This wordlists does not exist. Please set a correct path.";
 					e.Cancel = true;
 				}
-				//else if (File.ReadLines(wl.Path).Count() < 50)
-				//{
-				//	row.ErrorText += "This wordlists contains less than 50 words. Please use a larger wordlist.";
-				//	e.Cancel = true;
-				//}
 			}
 		}
 
@@ -215,7 +211,7 @@ namespace KeePassDiceware
 		/// </returns>
 		private string GetNonconflictingName(string name)
 		{
-			WordList wl = new WordList(name, "");
+			WordList wl = new WordListCustom(name, "");
 
 			if (Result.Count(cwl => cwl.Key == wl.Key) < 1)
 			{
@@ -249,7 +245,7 @@ namespace KeePassDiceware
 
 			var fileName = System.IO.Path.GetFileNameWithoutExtension(path);
 
-			WordList newList = new WordList(GetNonconflictingName(fileName), path);
+			WordList newList = new WordListCustom(GetNonconflictingName(fileName), path);
 
 			_wordListsBindingList.Add(newList);
 		}
@@ -265,10 +261,10 @@ namespace KeePassDiceware
 				&& e.ColumnIndex >= 0
 				&& WordListDataGridView.Columns[e.ColumnIndex].Name == "wordListPath"
 				&& WordListDataGridView.Rows[e.RowIndex].DataBoundItem is WordList wl
-				&& !wl.Embeded)
+				&& !wl.ReadOnly)
 			{
 				string newPath = GetNewWordListPath();
-				if (newPath != null && !IsDuplicateFile(newPath))
+				if (newPath != null && newPath != wl.Path && !IsDuplicateFile(newPath))
 				{
 					wl.Path = newPath;
 				}

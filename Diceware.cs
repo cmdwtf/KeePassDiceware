@@ -21,9 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 using KeePassLib.Cryptography;
@@ -33,9 +31,6 @@ namespace KeePassDiceware
 {
 	public class Diceware
 	{
-
-		private const string WordListFileExtension = ".txt";
-
 		private static readonly char[] LookalikeCharacters = "I|1lO0".ToCharArray();
 
 		// Copyright (C) 2014-2021 Mark McGuill. All rights reserved.
@@ -83,9 +78,6 @@ namespace KeePassDiceware
 			{ 'T', "7" },
 			{ 'Z', "2" },
 		};
-
-		// TODO clear when a enabled wordlists change (mainly when a new list is added with existing name)
-		private static readonly Dictionary<WordList, string[]> LoadedLists = new();
 
 		public static string Generate(Options options, PwProfile profile, CryptoRandomStream random)
 		{
@@ -358,65 +350,14 @@ namespace KeePassDiceware
 
 		public static IEnumerable<string> GetWordList(List<WordList> lists)
 		{
-			var selectedWordlists = new List<string[]>();
+			HashSet<string> joinedWordList = new HashSet<string>();
 
 			foreach (WordList list in lists.Where(wl => wl.Enabled))
 			{
-				if (LoadedLists.ContainsKey(list))
-				{
-					selectedWordlists.Add(LoadedLists[list]);
-				}
-				else
-				{
-					// TODO error checking when invalid value
-					string[] loadedList;
-					if (list.Embeded)
-					{
-						loadedList = ReadEmbeddedResource(list.Path).ToArray();
-					} else // user provided
-					{
-						loadedList = ReadExternalResource(list.Path).ToArray();
-					}
-
-					// cache it for re-use.
-					LoadedLists.Add(list, loadedList);
-
-					selectedWordlists.Add(loadedList);
-				}
+				joinedWordList.UnionWith(list.Get());
 			}
 
-			return selectedWordlists.SelectMany(s => s);
-		}
-
-		// via: https://stackoverflow.com/a/3314213/944605
-		public static IEnumerable<string> ReadEmbeddedResource(string resourceName, Encoding encoding = null)
-		{
-			encoding ??= Encoding.UTF8;
-
-			var assembly = Assembly.GetAssembly(typeof(Diceware));
-			string resourcePath = resourceName;
-
-			// Format: "{Namespace}.{Folder}.{Filename}.{Extension}"
-			if (!resourceName.StartsWith(nameof(KeePassDiceware)))
-			{
-				string[] manifestResourceNames = assembly.GetManifestResourceNames();
-				resourcePath = manifestResourceNames.Single(str => str.EndsWith(resourceName));
-			}
-
-			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
-			using var reader = new StreamReader(stream, encoding);
-			string line;
-
-			while ((line = reader.ReadLine()) != null)
-			{
-				yield return line;
-			}
-		}
-
-		public static IEnumerable<string> ReadExternalResource(string resourceName, Encoding encoding = null)
-		{
-			// TODO
-			yield return "";
+			return joinedWordList;
 		}
 	}
 }
