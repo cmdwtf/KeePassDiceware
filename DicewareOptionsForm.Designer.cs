@@ -21,6 +21,9 @@ namespace KeePassDiceware
             this.wordListsLabel = new System.Windows.Forms.Label();
             this.wordCountNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.OptionsGroupBox = new System.Windows.Forms.GroupBox();
+            this.options_wordlist_separator = new System.Windows.Forms.Label();
+            this.options_salt_separator = new System.Windows.Forms.Label();
+            this.activeSaltSourcesListView = new System.Windows.Forms.ListView();
             this.editWordListsButton = new System.Windows.Forms.Button();
             this.editSaltSourcesButton = new System.Windows.Forms.Button();
             this.advancedStrategyLabel = new System.Windows.Forms.Label();
@@ -30,9 +33,6 @@ namespace KeePassDiceware
             this.xkcdLinkLabel = new System.Windows.Forms.LinkLabel();
             this.dicewareLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MainPanel = new System.Windows.Forms.Panel();
-            this.activeSaltSourcesListView = new System.Windows.Forms.ListView();
-            this.options_salt_separator = new System.Windows.Forms.Label();
-            this.options_wordlist_separator = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.wordCountNumericUpDown)).BeginInit();
             this.OptionsGroupBox.SuspendLayout();
             this.ExplanationGroupBox.SuspendLayout();
@@ -41,11 +41,12 @@ namespace KeePassDiceware
             // 
             // okButton
             // 
+            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.okButton.Location = new System.Drawing.Point(606, 920);
             this.okButton.Margin = new System.Windows.Forms.Padding(4);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(112, 34);
-            this.okButton.TabIndex = 0;
+            this.okButton.TabIndex = 3;
             this.okButton.Text = "&OK";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.OkButton_Click);
@@ -57,7 +58,7 @@ namespace KeePassDiceware
             this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(112, 34);
-            this.cancelButton.TabIndex = 0;
+            this.cancelButton.TabIndex = 2;
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
@@ -69,7 +70,7 @@ namespace KeePassDiceware
             this.wordSeparatorPromptedTextBox.Name = "wordSeparatorPromptedTextBox";
             this.wordSeparatorPromptedTextBox.PromptText = "String to be placed between words";
             this.wordSeparatorPromptedTextBox.Size = new System.Drawing.Size(448, 26);
-            this.wordSeparatorPromptedTextBox.TabIndex = 1;
+            this.wordSeparatorPromptedTextBox.TabIndex = 3;
             // 
             // wordCasingComboBox
             // 
@@ -79,7 +80,7 @@ namespace KeePassDiceware
             this.wordCasingComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.wordCasingComboBox.Name = "wordCasingComboBox";
             this.wordCasingComboBox.Size = new System.Drawing.Size(448, 28);
-            this.wordCasingComboBox.TabIndex = 2;
+            this.wordCasingComboBox.TabIndex = 5;
             // 
             // l33tSpeakComboBox
             // 
@@ -89,7 +90,7 @@ namespace KeePassDiceware
             this.l33tSpeakComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.l33tSpeakComboBox.Name = "l33tSpeakComboBox";
             this.l33tSpeakComboBox.Size = new System.Drawing.Size(448, 28);
-            this.l33tSpeakComboBox.TabIndex = 3;
+            this.l33tSpeakComboBox.TabIndex = 7;
             // 
             // saltComboBox
             // 
@@ -99,7 +100,7 @@ namespace KeePassDiceware
             this.saltComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.saltComboBox.Name = "saltComboBox";
             this.saltComboBox.Size = new System.Drawing.Size(448, 28);
-            this.saltComboBox.TabIndex = 5;
+            this.saltComboBox.TabIndex = 12;
             // 
             // activeWordListsListView
             // 
@@ -109,7 +110,8 @@ namespace KeePassDiceware
             this.activeWordListsListView.Margin = new System.Windows.Forms.Padding(4);
             this.activeWordListsListView.Name = "activeWordListsListView";
             this.activeWordListsListView.Size = new System.Drawing.Size(448, 200);
-            this.activeWordListsListView.TabIndex = 7;
+            this.activeWordListsListView.TabIndex = 18;
+            this.activeWordListsListView.TabStop = false;
             this.activeWordListsListView.UseCompatibleStateImageBehavior = false;
             this.activeWordListsListView.View = System.Windows.Forms.View.Details;
             this.activeWordListsListView.SelectedIndexChanged += new System.EventHandler(this.WordListsListView_SelectedIndexChanged);
@@ -121,7 +123,7 @@ namespace KeePassDiceware
             this.wordCountLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.wordCountLabel.Name = "wordCountLabel";
             this.wordCountLabel.Size = new System.Drawing.Size(95, 20);
-            this.wordCountLabel.TabIndex = 7;
+            this.wordCountLabel.TabIndex = 0;
             this.wordCountLabel.Text = "Word count:";
             // 
             // wordSeparatorLabel
@@ -131,7 +133,7 @@ namespace KeePassDiceware
             this.wordSeparatorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.wordSeparatorLabel.Name = "wordSeparatorLabel";
             this.wordSeparatorLabel.Size = new System.Drawing.Size(123, 20);
-            this.wordSeparatorLabel.TabIndex = 7;
+            this.wordSeparatorLabel.TabIndex = 2;
             this.wordSeparatorLabel.Text = "Word separator:";
             // 
             // wordCasingsLabel
@@ -141,7 +143,7 @@ namespace KeePassDiceware
             this.wordCasingsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.wordCasingsLabel.Name = "wordCasingsLabel";
             this.wordCasingsLabel.Size = new System.Drawing.Size(109, 20);
-            this.wordCasingsLabel.TabIndex = 7;
+            this.wordCasingsLabel.TabIndex = 4;
             this.wordCasingsLabel.Text = "Word casings:";
             // 
             // l33tSpeakLabel
@@ -151,7 +153,7 @@ namespace KeePassDiceware
             this.l33tSpeakLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.l33tSpeakLabel.Name = "l33tSpeakLabel";
             this.l33tSpeakLabel.Size = new System.Drawing.Size(95, 20);
-            this.l33tSpeakLabel.TabIndex = 7;
+            this.l33tSpeakLabel.TabIndex = 6;
             this.l33tSpeakLabel.Text = "L33t Speak:";
             // 
             // saltsLabel
@@ -161,7 +163,7 @@ namespace KeePassDiceware
             this.saltsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.saltsLabel.Name = "saltsLabel";
             this.saltsLabel.Size = new System.Drawing.Size(41, 20);
-            this.saltsLabel.TabIndex = 7;
+            this.saltsLabel.TabIndex = 11;
             this.saltsLabel.Text = "Salt:";
             // 
             // wordListsLabel
@@ -171,7 +173,7 @@ namespace KeePassDiceware
             this.wordListsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.wordListsLabel.Name = "wordListsLabel";
             this.wordListsLabel.Size = new System.Drawing.Size(141, 20);
-            this.wordListsLabel.TabIndex = 7;
+            this.wordListsLabel.TabIndex = 17;
             this.wordListsLabel.Text = "Enabled word lists:";
             // 
             // wordCountNumericUpDown
@@ -190,7 +192,7 @@ namespace KeePassDiceware
             0});
             this.wordCountNumericUpDown.Name = "wordCountNumericUpDown";
             this.wordCountNumericUpDown.Size = new System.Drawing.Size(450, 26);
-            this.wordCountNumericUpDown.TabIndex = 0;
+            this.wordCountNumericUpDown.TabIndex = 1;
             this.wordCountNumericUpDown.Value = new decimal(new int[] {
             1,
             0,
@@ -228,13 +230,43 @@ namespace KeePassDiceware
             this.OptionsGroupBox.TabStop = false;
             this.OptionsGroupBox.Text = "Options";
             // 
+            // options_wordlist_separator
+            // 
+            this.options_wordlist_separator.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.options_wordlist_separator.Location = new System.Drawing.Point(0, 529);
+            this.options_wordlist_separator.Name = "options_wordlist_separator";
+            this.options_wordlist_separator.Size = new System.Drawing.Size(700, 2);
+            this.options_wordlist_separator.TabIndex = 16;
+            // 
+            // options_salt_separator
+            // 
+            this.options_salt_separator.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.options_salt_separator.Location = new System.Drawing.Point(0, 220);
+            this.options_salt_separator.Name = "options_salt_separator";
+            this.options_salt_separator.Size = new System.Drawing.Size(700, 2);
+            this.options_salt_separator.TabIndex = 10;
+            // 
+            // activeSaltSourcesListView
+            // 
+            this.activeSaltSourcesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.activeSaltSourcesListView.HideSelection = false;
+            this.activeSaltSourcesListView.Location = new System.Drawing.Point(222, 275);
+            this.activeSaltSourcesListView.Margin = new System.Windows.Forms.Padding(4);
+            this.activeSaltSourcesListView.Name = "activeSaltSourcesListView";
+            this.activeSaltSourcesListView.Size = new System.Drawing.Size(448, 200);
+            this.activeSaltSourcesListView.TabIndex = 14;
+            this.activeSaltSourcesListView.TabStop = false;
+            this.activeSaltSourcesListView.UseCompatibleStateImageBehavior = false;
+            this.activeSaltSourcesListView.View = System.Windows.Forms.View.Details;
+            this.activeSaltSourcesListView.SelectedIndexChanged += new System.EventHandler(this.ActiveSaltSourcesListView_SelectedIndexChanged);
+            // 
             // editWordListsButton
             // 
             this.editWordListsButton.Location = new System.Drawing.Point(220, 761);
             this.editWordListsButton.Margin = new System.Windows.Forms.Padding(4);
             this.editWordListsButton.Name = "editWordListsButton";
             this.editWordListsButton.Size = new System.Drawing.Size(448, 34);
-            this.editWordListsButton.TabIndex = 9;
+            this.editWordListsButton.TabIndex = 19;
             this.editWordListsButton.Text = "Edit Word Lists";
             this.editWordListsButton.UseVisualStyleBackColor = true;
             this.editWordListsButton.Click += new System.EventHandler(this.EditWordListsButton_Click);
@@ -245,7 +277,7 @@ namespace KeePassDiceware
             this.editSaltSourcesButton.Margin = new System.Windows.Forms.Padding(4);
             this.editSaltSourcesButton.Name = "editSaltSourcesButton";
             this.editSaltSourcesButton.Size = new System.Drawing.Size(450, 34);
-            this.editSaltSourcesButton.TabIndex = 8;
+            this.editSaltSourcesButton.TabIndex = 15;
             this.editSaltSourcesButton.Text = "Edit Salt Sources";
             this.editSaltSourcesButton.UseVisualStyleBackColor = true;
             this.editSaltSourcesButton.Click += new System.EventHandler(this.EditSaltSourcesButton_Click);
@@ -257,7 +289,7 @@ namespace KeePassDiceware
             this.advancedStrategyLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.advancedStrategyLabel.Name = "advancedStrategyLabel";
             this.advancedStrategyLabel.Size = new System.Drawing.Size(148, 20);
-            this.advancedStrategyLabel.TabIndex = 7;
+            this.advancedStrategyLabel.TabIndex = 8;
             this.advancedStrategyLabel.Text = "Advanced Strategy:";
             // 
             // saltSourcesLabel
@@ -267,7 +299,7 @@ namespace KeePassDiceware
             this.saltSourcesLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.saltSourcesLabel.Name = "saltSourcesLabel";
             this.saltSourcesLabel.Size = new System.Drawing.Size(161, 20);
-            this.saltSourcesLabel.TabIndex = 7;
+            this.saltSourcesLabel.TabIndex = 13;
             this.saltSourcesLabel.Text = "Enabled salt sources:";
             // 
             // advancedStrategyComboBox
@@ -278,7 +310,7 @@ namespace KeePassDiceware
             this.advancedStrategyComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.advancedStrategyComboBox.Name = "advancedStrategyComboBox";
             this.advancedStrategyComboBox.Size = new System.Drawing.Size(448, 28);
-            this.advancedStrategyComboBox.TabIndex = 4;
+            this.advancedStrategyComboBox.TabIndex = 9;
             // 
             // ExplanationGroupBox
             // 
@@ -289,7 +321,7 @@ namespace KeePassDiceware
             this.ExplanationGroupBox.Name = "ExplanationGroupBox";
             this.ExplanationGroupBox.Padding = new System.Windows.Forms.Padding(4);
             this.ExplanationGroupBox.Size = new System.Drawing.Size(700, 75);
-            this.ExplanationGroupBox.TabIndex = 9;
+            this.ExplanationGroupBox.TabIndex = 1;
             this.ExplanationGroupBox.TabStop = false;
             this.ExplanationGroupBox.Text = "Explanation";
             // 
@@ -300,7 +332,7 @@ namespace KeePassDiceware
             this.xkcdLinkLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.xkcdLinkLabel.Name = "xkcdLinkLabel";
             this.xkcdLinkLabel.Size = new System.Drawing.Size(62, 20);
-            this.xkcdLinkLabel.TabIndex = 0;
+            this.xkcdLinkLabel.TabIndex = 1;
             this.xkcdLinkLabel.TabStop = true;
             this.xkcdLinkLabel.Tag = "https://xkcd.com/936/";
             this.xkcdLinkLabel.Text = "XKCD?";
@@ -329,35 +361,7 @@ namespace KeePassDiceware
             this.MainPanel.Margin = new System.Windows.Forms.Padding(4);
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(741, 967);
-            this.MainPanel.TabIndex = 10;
-            // 
-            // activeSaltSourcesListView
-            // 
-            this.activeSaltSourcesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.activeSaltSourcesListView.Location = new System.Drawing.Point(222, 275);
-            this.activeSaltSourcesListView.Margin = new System.Windows.Forms.Padding(4);
-            this.activeSaltSourcesListView.Name = "activeSaltSourcesListView";
-            this.activeSaltSourcesListView.Size = new System.Drawing.Size(448, 200);
-            this.activeSaltSourcesListView.TabIndex = 10;
-            this.activeSaltSourcesListView.UseCompatibleStateImageBehavior = false;
-            this.activeSaltSourcesListView.View = System.Windows.Forms.View.Details;
-            this.activeSaltSourcesListView.SelectedIndexChanged += new System.EventHandler(this.ActiveSaltSourcesListView_SelectedIndexChanged);
-            // 
-            // options_salt_separator
-            // 
-            this.options_salt_separator.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.options_salt_separator.Location = new System.Drawing.Point(0, 220);
-            this.options_salt_separator.Name = "options_salt_separator";
-            this.options_salt_separator.Size = new System.Drawing.Size(700, 2);
-            this.options_salt_separator.TabIndex = 11;
-            // 
-            // options_wordlist_separator
-            // 
-            this.options_wordlist_separator.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.options_wordlist_separator.Location = new System.Drawing.Point(0, 529);
-            this.options_wordlist_separator.Name = "options_wordlist_separator";
-            this.options_wordlist_separator.Size = new System.Drawing.Size(700, 2);
-            this.options_wordlist_separator.TabIndex = 12;
+            this.MainPanel.TabIndex = 0;
             // 
             // DicewareOptionsForm
             // 

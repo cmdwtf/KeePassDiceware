@@ -161,7 +161,7 @@ namespace KeePassDiceware
             this.AddNewButton.Margin = new System.Windows.Forms.Padding(4);
             this.AddNewButton.Name = "AddNewButton";
             this.AddNewButton.Size = new System.Drawing.Size(112, 34);
-            this.AddNewButton.TabIndex = 5;
+            this.AddNewButton.TabIndex = 2;
             this.AddNewButton.Text = "&Add";
             this.AddNewButton.UseVisualStyleBackColor = true;
             this.AddNewButton.Click += new System.EventHandler(this.AddNewButton_Click);
