@@ -112,7 +112,6 @@ namespace KeePassDiceware
 		/// </summary>
 		public CategoryEnum Category { get; set; }
 
-		//public bool Embeded { get; private set; } = false;
 		/// <summary>
 		/// true if wordlist is read only.
 		/// </summary>
@@ -153,7 +152,6 @@ namespace KeePassDiceware
 
 	public class WordListEmbeded : WordList
 	{
-		//public bool Embeded { get; private set; } = false;
 		/// <summary>
 		/// true if wordlist is read only.
 		/// </summary>
