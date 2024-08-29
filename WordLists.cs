@@ -221,6 +221,23 @@ namespace KeePassDiceware
 			}
 		}
 
+		public string GetBareFilename()
+		{
+			string tempPath = Path;
+			if (tempPath.StartsWith(VirtualPath))
+			{
+				tempPath = tempPath.Remove(0, VirtualPath.Length);
+			}
+
+			const string extensions = ".txt";
+			if (tempPath.EndsWith(extensions))
+			{
+				tempPath = tempPath.Remove(tempPath.Length - extensions.Length, extensions.Length);
+			}
+
+			return tempPath;
+		}
+
 		/// <summary>
 		/// Default embeded wordlist.
 		/// </summary>
