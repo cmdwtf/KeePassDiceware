@@ -10,7 +10,7 @@ namespace KeePassDiceware
 		/// <summary>
 		/// Generates a pseudorandom value in range [0, <paramref name="maxInclusive"/>] (both ends are inclusive).
 		/// </summary>
-		/// <param name="maxInclusive"> maximal value (inclusive) of random number.</param>
+		/// <param name="maxInclusive">maximal value (inclusive) of random number.</param>
 		/// <returns>
 		/// Pseudorandom value from [0, <paramref name="maxInclusive"/>] range.
 		/// </returns>
@@ -37,7 +37,7 @@ namespace KeePassDiceware
 		/// <summary>
 		/// Generates a pseudorandom value in range [0, <paramref name="maxInclusive"/>] (both ends are inclusive).
 		/// </summary>
-		/// <param name="maxInclusive"> maximal value (inclusive) of random number.</param>
+		/// <param name="maxInclusive">maximal value (inclusive) of random number.</param>
 		/// <returns>
 		/// Pseudorandom value from [0, <paramref name="maxInclusive"/>] range.
 		/// </returns>
@@ -56,8 +56,8 @@ namespace KeePassDiceware
 		/// <summary>
 		/// Generates a pseudorandom value in range [<paramref name="minInclusive"/>, <paramref name="maxInclusive"/>] (both ends are inclusive).
 		/// </summary>
-		/// <param name="minInclusive"> minimal value (inclusive) of random number.</param>
-		/// <param name="maxInclusive"> maximal value (inclusive) of random number.</param>
+		/// <param name="minInclusive">minimal value (inclusive) of random number.</param>
+		/// <param name="maxInclusive">maximal value (inclusive) of random number.</param>
 		/// <returns>
 		/// Pseudorandom value from [<paramref name="minInclusive"/>, <paramref name="maxInclusive"/>] range.
 		/// </returns>
@@ -79,7 +79,7 @@ namespace KeePassDiceware
 		/// <summary>
 		/// Selects a pseudorandom element from <paramref name="array"/>.
 		/// </summary>
-		/// <param name="array"> array from which to select the random element.</param>
+		/// <param name="array">array from which to select the random element.</param>
 		/// <returns>
 		/// A pseudorandom element from <paramref name="array"/>.
 		/// </returns>

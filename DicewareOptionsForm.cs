@@ -22,6 +22,11 @@ namespace KeePassDiceware
 
 		private List<SaltSource> _saltSources = new();
 
+		private List<WordList> _wordLists = new();
+		private readonly ListViewGroup[] _wordListCategories = Enum.GetNames(typeof(WordList.CategoryEnum))
+			.Select(wl => new ListViewGroup(wl, wl)).ToArray();
+
+
 		public DicewareOptionsForm()
 		{
 			InitializeComponent();
@@ -49,24 +54,11 @@ namespace KeePassDiceware
 			saltComboBox.SelectedIndex = 0;
 
 			_saltSources.Clear();
-			activeSaltSourcesLabel.Text = string.Empty;
+			activeSaltSourcesListView.Columns.Add("Salt sources");
 
-			wordListsListView.Columns.Add("Word List");
-
-			ListViewGroup[] wordListCategories = EnumTools.GetCategories<WordLists>()
-				.Select(c => new ListViewGroup(c, c))
-				.ToArray();
-
-			wordListsListView.Groups.AddRange(wordListCategories);
-
-			ListViewItem[] wordLists = EnumTools.GetDisplays<WordLists>()
-				.Select(v =>
-					new ListViewItem($"{v}", wordListCategories.First(c => c.Name == v.Category)))
-				.ToArray();
-
-			wordListsListView.Items.AddRange(wordLists);
-
-			wordListsListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+			_wordLists.Clear();
+			activeWordListsListView.Columns.Add("Word List");
+			activeWordListsListView.Groups.AddRange(_wordListCategories);
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -90,31 +82,40 @@ namespace KeePassDiceware
 			l33tSpeakComboBox.SelectedIndex = l33tSpeakComboBox.FindStringExact(Options.L33tSpeak.GetDescription());
 			saltComboBox.SelectedIndex = saltComboBox.FindStringExact(Options.Salt.GetDescription());
 			_saltSources = new(Options.SaltSources);
-			UpdateSaltSourcesLabel();
-			UpdateListView(wordListsListView, Options.WordLists);
+			_wordLists = new(Options.WordLists);
+			UpdateSaltSourcesListView();
+			UpdateWordListsListView();
 		}
 
-		private void UpdateSaltSourcesLabel()
+		private void UpdateSaltSourcesListView()
 		{
-			IEnumerable<string> sources = _saltSources.Where(ss => ss.Enabled)
+			string[] sources = _saltSources.Where(ss => ss.Enabled)
 				.Select(ss => $"{ss.Name} "
 					+ (ss.MinimumAmount == ss.MaximumAmount
 						? $"({ss.MinimumAmount})"
 						: $"({ss.MinimumAmount}-{ss.MaximumAmount})")
-					);
+				).ToArray();
 
-			activeSaltSourcesLabel.Text = string.Join(", ", sources);
+			activeSaltSourcesListView.Items.Clear();
+			foreach (string rowString in sources)
+			{
+				ListViewItem rowItem = new ListViewItem(rowString);
+				activeSaltSourcesListView.Items.Add(rowItem);
+			}
+			activeSaltSourcesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 		}
 
-		private void UpdateListView<T>(ListView view, T flags) where T : Enum
+		private void UpdateWordListsListView()
 		{
-			foreach (ListViewItem i in view.Items)
-			{
-				T flag = EnumTools.FromDescription<T>(i.Text);
-				i.Checked = flags.HasFlag(flag);
-			}
+			ListViewItem[] lists = _wordLists.Where(wl => wl.Enabled)
+				.Select(wl => new ListViewItem(wl.Name,
+				_wordListCategories.First(g => g.Name == Enum.GetName(typeof(WordList.CategoryEnum), wl.Category))))
+				.ToArray();
 
-			view.Refresh();
+			activeWordListsListView.Items.Clear();
+			activeWordListsListView.Items.AddRange(lists);
+
+			activeWordListsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 		}
 
 		private Options GetOptions()
@@ -128,32 +129,15 @@ namespace KeePassDiceware
 				AdvancedStrategy = EnumTools.FromDescription<AdvancedStrategy>(advancedStrategyComboBox.SelectedItem.ToString()),
 				Salt = EnumTools.FromDescription<SaltType>(saltComboBox.SelectedItem.ToString()),
 				SaltSources = new(_saltSources),
-				WordLists = GetListViewFlags<WordLists>(wordListsListView)
+				WordLists = new(_wordLists)
 			};
-		}
-
-		private T GetListViewFlags<T>(ListView view) where T : Enum
-		{
-			int result = 0;
-			foreach (ListViewItem i in view.Items)
-			{
-				T flagEnum = EnumTools.FromDescription<T>(i.Text);
-				int flag = (int)Convert.ChangeType(flagEnum, typeof(int));
-
-				if (i.Checked)
-				{
-					result |= flag;
-				}
-			}
-
-			return (T)Enum.ToObject(typeof(T), result);
 		}
 
 		private void OkButton_Click(object sender, System.EventArgs e)
 		{
 			Options = GetOptions();
 
-			if (Options.WordLists == WordLists.None)
+			if (Options.WordLists.Count() == 0)
 			{
 				MessageBox.Show(this, $"No word lists were selected. This will prevent the plugin from generating passwords. Please select at least one list.", "Options Validation Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				DialogResult = DialogResult.Cancel;
@@ -196,7 +180,30 @@ namespace KeePassDiceware
 			}
 
 			_saltSources = ssf.Result;
-			UpdateSaltSourcesLabel();
+			UpdateSaltSourcesListView();
+		}
+
+		private void EditWordListsButton_Click(object sender, EventArgs e)
+		{
+			WordListsForm wlf = new(_wordLists);
+
+			if (wlf.ShowDialog(this) == DialogResult.Cancel)
+			{
+				return;
+			}
+
+			_wordLists = wlf.Result;
+			UpdateWordListsListView();
+		}
+
+		private void ActiveSaltSourcesListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			((ListView)sender).SelectedItems.Clear();
+		}
+
+		private void WordListsListView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			((ListView)sender).SelectedItems.Clear();
 		}
 	}
 }

@@ -35,10 +35,7 @@ namespace KeePassDiceware
 		public L33tSpeakType L33tSpeak { get; set; } = L33tSpeakType.None;
 		public SaltType Salt { get; set; } = SaltType.None;
 		public List<SaltSource> SaltSources { get; set; } = new();
-		public WordLists WordLists { get; set; } =
-			WordLists.Diceware
-			| WordLists.EffLarge
-			| WordLists.Google;
+		public List<WordList> WordLists { get; set; } = new();
 		public AdvancedStrategy AdvancedStrategy { get; set; } = AdvancedStrategy.Drop;
 
 		public Options() { }
@@ -47,7 +44,8 @@ namespace KeePassDiceware
 		{
 			return new()
 			{
-				SaltSources = SaltSource.DefaultSources,
+				SaltSources = SaltSource.Default,
+				WordLists = WordListEmbeded.Default,
 			};
 		}
 
@@ -58,7 +56,47 @@ namespace KeePassDiceware
 			XmlSerializer xml = new(typeof(Options));
 			xml.UnknownElement += Xml_UnknownElement;
 			Options result = xml.Deserialize(reader) as Options;
+			MigrateWordListsIfNeeded(serialized, ref result);
 			return result;
+		}
+
+		/// <summary>
+		/// Handles migration of WordList storage on versions <= 1.6.0. If a wordlists were set, it is replaced by the same configuration in the new system
+		/// </summary>
+		/// <param name="serialized">The serialized XML configuration</param>
+		/// <param name="result">The resulting Options</param>
+		private static void MigrateWordListsIfNeeded(string serialized, ref Options result)
+		{
+			using StringReader stream = new(serialized.Trim());
+			using var reader = XmlReader.Create(stream);
+
+			// migrate from <= v1.6.0 word lists
+			reader.ReadToDescendant("WordLists");
+
+			// They do not start as objects - it is simply a string stream
+			if (reader.Read() && !reader.Value.StartsWith("<"))
+			{
+				// Start with a default wordlist with all disabled
+				List<WordList> newWordLists = WordListEmbeded.Default;
+				newWordLists.ForEach(wl => wl.Enabled = false);
+
+				string[] oldWordListNames = reader.Value.Split(new char[] { ' ' });
+
+				foreach (var currentWordListName in oldWordListNames)
+				{
+					int index = newWordLists.FindIndex(wl => ((WordListEmbeded)wl).GetBareFilename() == currentWordListName);
+
+					// If unexpected value (e.g. nonexistent wordlist) is found -> discard all changes
+					if (index == -1)
+					{
+						return;
+					}
+
+					newWordLists.ElementAt(index).Enabled = true;
+				}
+
+				result.WordLists = newWordLists;
+			}
 		}
 
 		private static void Xml_UnknownElement(object sender, XmlElementEventArgs e)
@@ -74,7 +112,7 @@ namespace KeePassDiceware
 				string[] saltSourceNames = e.Element.InnerText.Split(new char[] { ' ' });
 
 				// start from the defaults
-				opts.SaltSources = SaltSource.DefaultSources;
+				opts.SaltSources = SaltSource.Default;
 
 				foreach (SaltSource ss in opts.SaltSources)
 				{
