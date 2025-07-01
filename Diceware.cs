@@ -156,6 +156,13 @@ namespace KeePassDiceware
 						string first = words[scan][0].ToString().ToUpperInvariant();
 						words[scan] = $"{first}{words[scan].Substring(1)}";
 						break;
+					case WordCasingType.RandomFirstLetter:
+						if (random.CoinToss())
+						{
+							string firstLetter = words[scan][0].ToString().ToUpperInvariant();
+							words[scan] = $"{firstLetter}{words[scan].Substring(1)}";
+						}
+						break;
 					case WordCasingType.Random:
 						char[] randomized = (from c in words[scan].ToCharArray()
 											 select (random.CoinToss()

@@ -31,5 +31,7 @@ namespace KeePassDiceware
 		Random,
 		[Description("Random Whole Words")]
 		WholeWord,
+		[Description("Random First Letters")]
+		RandomFirstLetter,
 	};
 }
