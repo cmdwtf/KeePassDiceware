@@ -345,7 +345,7 @@ namespace KeePassDiceware
 				result.Append(chars);
 			}
 
-			return result?.ToString() ?? string.Empty;
+			return result?.ToString().Shuffle(random) ?? string.Empty;
 		}
 
 		public static IEnumerable<string> GetWordList(List<WordList> lists)
