@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 
 using KeePassLib.Cryptography;
 
@@ -105,5 +106,24 @@ namespace KeePassDiceware
 		/// TRUE / FALSE with equal probabilities.
 		/// </returns>
 		public static bool CoinToss(this CryptoRandomStream random) => (random.GetRandomBytes(1)[0] & 1) == 0;
+
+		/// <summary>
+		/// Shuffles the order of characters in input string <paramref name="str"/>.
+		/// </summary>
+		/// <param name="str">String to shuffle.</param>
+		/// <returns>
+		/// A new string with the characters in a random order.
+		/// </returns>
+		public static string Shuffle(this string str, CryptoRandomStream random)
+		{
+			if (string.IsNullOrEmpty(str) || str.Length <= 1)
+			{
+				return str;
+			}
+
+			string result = new(str.ToCharArray().OrderBy(s => random.AtMost(ulong.MaxValue)).ToArray());
+
+			return result;
+		}
 	}
 }
