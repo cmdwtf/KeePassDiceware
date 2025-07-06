@@ -33,6 +33,8 @@ namespace KeePassDiceware
 		[Description("Title Case Random")]
 		TitleCaseRandom,
 		Random,
+		[Description("Random Whole Word")]
+		WholeWordOneRandom,
 		[Description("Random Whole Words")]
 		WholeWord,
 	};
