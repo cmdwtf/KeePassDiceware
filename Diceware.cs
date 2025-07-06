@@ -302,6 +302,17 @@ namespace KeePassDiceware
 					int prefixToIndex = random.AtMost(words.Length - 1);
 					words[prefixToIndex] = $"{singleSalt}{words[prefixToIndex]}";
 					break;
+				case SaltType.AsSeparateWordOnce:
+					int insertBefore = random.AtMost(words.Length);
+					if (insertBefore != words.Length)
+					{
+						words[insertBefore] = $"{singleSalt}{separator}{words[insertBefore]}";
+					}
+					else // There is no word with index insertBefore, we need to append it
+					{
+						words[insertBefore - 1] = $"{words[insertBefore - 1]}{separator}{singleSalt}";
+					}
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(salt));
 			}
