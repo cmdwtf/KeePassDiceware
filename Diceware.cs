@@ -294,6 +294,14 @@ namespace KeePassDiceware
 
 					words[targetIndex] = $"{words[targetIndex]}{separator}{singleSalt}";
 					break;
+				case SaltType.SuffixToRandomWord:
+					int suffixToIndex = random.AtMost(words.Length - 1);
+					words[suffixToIndex] = $"{words[suffixToIndex]}{singleSalt}";
+					break;
+				case SaltType.PrefixToRandomWord:
+					int prefixToIndex = random.AtMost(words.Length - 1);
+					words[prefixToIndex] = $"{singleSalt}{words[prefixToIndex]}";
+					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(salt));
 			}

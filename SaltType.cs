@@ -36,5 +36,9 @@ namespace KeePassDiceware
 		BetweenOne,
 		[Description("Between each word")]
 		BetweenEach,
+		[Description("Prepend to the beginning of a random word")]
+		PrefixToRandomWord,
+		[Description("Appended to the end of a random word")]
+		SuffixToRandomWord,
 	}
 }
