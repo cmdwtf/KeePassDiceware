@@ -135,17 +135,19 @@ namespace KeePassDiceware
 			}
 		}
 
-		private static void ApplyWordCasing(string[] words, WordCasingType wordCasing, CryptoRandomStream random)
+		/// <summary>
+		/// Applies word casings that can modify multiple words.
+		/// </summary>
+		/// <param name="words">list of words to apply word casing to.</param>
+		/// <param name="wordCasing">requested word casing type.</param>
+		/// <param name="random">PRNG source.</param>
+		private static void ApplyWordCasingAcrossMultipleWords(string[] words, WordCasingType wordCasing, CryptoRandomStream random)
 		{
-			if (wordCasing == WordCasingType.DoNotChange)
-			{
-				return;
-			}
-
 			for (int scan = 0; scan < words.Length; ++scan)
 			{
 				switch (wordCasing)
 				{
+					// case WordCasingType.DoNotChange: // handled in ApplyWordCasing
 					case WordCasingType.Lowercase:
 						words[scan] = words[scan].ToLowerInvariant();
 						break;
@@ -156,13 +158,7 @@ namespace KeePassDiceware
 						string first = words[scan][0].ToString().ToUpperInvariant();
 						words[scan] = $"{first}{words[scan].Substring(1)}";
 						break;
-					case WordCasingType.TitleCaseFirst:
-						if (scan == 0)
-						{
-							string titleFirst = words[scan][0].ToString().ToUpperInvariant();
-							words[scan] = $"{titleFirst}{words[scan].Substring(1)}";
-						}
-						break;
+					// case WordCasingType.TitleCaseFirst: // handled in ApplyWordCasing
 					case WordCasingType.TitleCaseRandom:
 						if (random.CoinToss())
 						{
@@ -179,6 +175,7 @@ namespace KeePassDiceware
 											.ToArray();
 						words[scan] = new string(randomized);
 						break;
+					// case WordCasingType.WholeWordOneRandom: // handled in ApplyWordCasing
 					case WordCasingType.WholeWord:
 						if (random.CoinToss())
 						{
@@ -188,6 +185,38 @@ namespace KeePassDiceware
 					default:
 						throw new ArgumentOutOfRangeException(nameof(wordCasing));
 				}
+			}
+		}
+
+		/// <summary>
+		/// Applies word casings.
+		/// </summary>
+		/// <param name="words">list of words to apply word casing to.</param>
+		/// <param name="wordCasing">requested word casing type.</param>
+		/// <param name="random">PRNG source.</param>
+		private static void ApplyWordCasing(string[] words, WordCasingType wordCasing, CryptoRandomStream random)
+		{
+			if (words.Length == 0)
+			{
+				return; // No words to Word Cast
+			}
+
+			// Handle single word modifications, pass the rest to ApplyWordCasingAcrossMultipleWords
+			switch (wordCasing)
+			{
+				case WordCasingType.DoNotChange:
+					break;
+				case WordCasingType.TitleCaseFirst:
+					string titleFirst = words[0][0].ToString().ToUpperInvariant();
+					words[0] = $"{titleFirst}{words[0].Substring(1)}";
+					break;
+				case WordCasingType.WholeWordOneRandom:
+					int randomWordIndex = random.AtMost(words.Length - 1);
+					words[randomWordIndex] = words[randomWordIndex].ToUpperInvariant();
+					break;
+				default:
+					ApplyWordCasingAcrossMultipleWords(words, wordCasing, random);
+					break;
 			}
 		}
 
