@@ -269,6 +269,7 @@ namespace KeePassDiceware
 				defaultList.Add(new WordListEmbeded("Finnish", "Finnish.txt", false, CategoryEnum.Languages));
 				defaultList.Add(new WordListEmbeded("French", "French.txt", false, CategoryEnum.Languages));
 				defaultList.Add(new WordListEmbeded("German", "German.txt", false, CategoryEnum.Languages));
+				defaultList.Add(new WordListEmbeded("Hanyu Pinyin (Chinese Phonetic Alphabet)", "HanyuPinyin.txt", false, CategoryEnum.Languages));
 				defaultList.Add(new WordListEmbeded("Icelandic", "Icelandic.txt", false, CategoryEnum.Languages));
 				defaultList.Add(new WordListEmbeded("Italian", "Italian.txt", false, CategoryEnum.Languages));
 				defaultList.Add(new WordListEmbeded("Japanese", "Japanese.txt", false, CategoryEnum.Languages));
@@ -325,3 +326,4 @@ namespace KeePassDiceware
 		}
 	}
 }
+
